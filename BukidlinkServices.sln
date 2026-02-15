@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProductCatalogService", "ProductCatalogService", "{37160D5E-24FB-4828-8761-ECF74C4349C0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuthService", "AuthService", "{C1F70ACF-5EA8-4747-B326-9BE2A24270AC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InventoryService", "InventoryService", "{48587EA2-3A1B-4D9F-8D6A-F821978C0142}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OrderService", "OrderService", "{524C145D-03BF-4E35-AD0D-F5D5EC90E4A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShippingService", "ShippingService", "{E6CDEEB9-3C98-4164-968B-53A0D0E35ED9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalogAPI", "ProductCatalogAPI\ProductCatalogAPI.csproj", "{20D067F5-DCF3-4BE6-A3FF-249060F4291A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{20D067F5-DCF3-4BE6-A3FF-249060F4291A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20D067F5-DCF3-4BE6-A3FF-249060F4291A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20D067F5-DCF3-4BE6-A3FF-249060F4291A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20D067F5-DCF3-4BE6-A3FF-249060F4291A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{20D067F5-DCF3-4BE6-A3FF-249060F4291A} = {37160D5E-24FB-4828-8761-ECF74C4349C0}
+	EndGlobalSection
+EndGlobal
