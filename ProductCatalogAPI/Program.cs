@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProductCatalogAPI.Infrastructure;
 using ProductCatalogAPI.Products.CreateProduct;
+using ProductCatalogAPI.Products.GetProducts;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,9 +15,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 builder.Services.AddScoped<CreateProductLogic>();
+builder.Services.AddScoped<GetProductsLogic>();
 
 var app = builder.Build();
 CreateProductEndpoint.MapEndpoint(app);
+GetProductsEndpoint.MapEndpoint(app);
 
 
 // Configure the HTTP request pipeline.
