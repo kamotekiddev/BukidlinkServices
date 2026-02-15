@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ProductCatalogAPI.Infrastructure;
 using ProductCatalogAPI.Products.CreateProduct;
@@ -13,6 +14,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddValidatorsFromAssemblies([typeof(Program).Assembly]);
 
 builder.Services.AddScoped<CreateProductLogic>();
 builder.Services.AddScoped<GetProductsLogic>();
