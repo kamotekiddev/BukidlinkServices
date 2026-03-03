@@ -18,6 +18,7 @@ public class CreateProductModule : ICarterModule
                     var product = await mediator.Send(command, cancellationToken);
                     return Results.Created("products", new ProductDto()
                     {
+                        Id = product.Id,
                         Name = product.Name,
                         Description = product.Description
                     });
