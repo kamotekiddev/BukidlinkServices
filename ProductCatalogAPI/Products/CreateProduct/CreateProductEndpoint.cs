@@ -1,23 +1,31 @@
+using Carter;
 using FluentValidation;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ProductCatalogAPI.Products.CreateProduct;
 
-public class CreateProductEndpoint
+public class CreateProductModule : ICarterModule
 {
-    public static void MapEndpoint(IEndpointRouteBuilder app)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapPost("/products",
-            async (CreateProductRequest request, CreateProductLogic createProductLogic,
-                IValidator<CreateProductRequest> validator) =>
-            {
-                var validationResult = await validator.ValidateAsync(request);
+                async (CreateProductCommand command, IValidator<CreateProductCommand> validator, IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    await validator.ValidateAndThrowAsync(command, cancellationToken);
 
-                if (!validationResult.IsValid)
-                    return Results.BadRequest(
-                        validationResult.Errors.Select(e => new { e.PropertyName, e.ErrorMessage }));
-
-                var product = await createProductLogic.ExecuteAsync(request);
-                return Results.Ok(product);
-            });
+                    var product = await mediator.Send(command, cancellationToken);
+                    return Results.Created("products", new ProductDto()
+                    {
+                        Name = product.Name,
+                        Description = product.Description
+                    });
+                })
+            .WithName("Create Product")
+            .Produces<ProductDto>(StatusCodes.Status201Created)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
     }
 }

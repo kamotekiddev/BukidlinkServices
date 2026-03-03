@@ -1,6 +1,6 @@
 namespace ProductCatalogAPI.Products.CreateProduct;
 
-public class CreateProductRequest
+public class ProductDto
 {
     public string Name { get; set; }
     public string Description { get; set; }

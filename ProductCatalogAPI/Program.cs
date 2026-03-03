@@ -1,14 +1,15 @@
+using System.Reflection;
+using Carter;
 using FluentValidation;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using ProductCatalogAPI.Common.Errors;
+using ProductCatalogAPI.Common.Exceptions;
 using ProductCatalogAPI.Infrastructure;
-using ProductCatalogAPI.Products.CreateProduct;
-using ProductCatalogAPI.Products.GetProducts;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -16,13 +17,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 builder.Services.AddValidatorsFromAssemblies([typeof(Program).Assembly]);
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly())
+);
+builder.Services.AddCarter();
 
-builder.Services.AddScoped<CreateProductLogic>();
-builder.Services.AddScoped<GetProductsLogic>();
 
 var app = builder.Build();
-CreateProductEndpoint.MapEndpoint(app);
-GetProductsEndpoint.MapEndpoint(app);
+app.UseGlobalExceptionHandler();
 
 
 // Configure the HTTP request pipeline.
@@ -36,5 +38,6 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.MapCarter();
 app.UseHttpsRedirection();
 app.Run();

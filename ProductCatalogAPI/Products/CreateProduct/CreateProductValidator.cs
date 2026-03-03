@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace ProductCatalogAPI.Products.CreateProduct;
 
-public class CreateProductValidator : AbstractValidator<CreateProductRequest>
+public class CreateProductValidator : AbstractValidator<CreateProductCommand>
 {
     public CreateProductValidator()
     {
