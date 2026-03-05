@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ProductCatalogAPI.Infrastructure;
@@ -11,9 +12,11 @@ using ProductCatalogAPI.Infrastructure;
 namespace ProductCatalogAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260305082053_Create Product Variants")]
+    partial class CreateProductVariants
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,18 +59,29 @@ namespace ProductCatalogAPI.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("ProductId1")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductId1");
 
                     b.ToTable("ProductVariants");
                 });
 
             modelBuilder.Entity("ProductCatalogAPI.Domain.ProductVariant", b =>
                 {
-                    b.HasOne("ProductCatalogAPI.Domain.Product", "Product")
-                        .WithMany("Variants")
+                    b.HasOne("ProductCatalogAPI.Domain.Product", null)
+                        .WithMany()
                         .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProductCatalogAPI.Domain.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -118,11 +132,6 @@ namespace ProductCatalogAPI.Migrations
 
                     b.Navigation("Sku")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ProductCatalogAPI.Domain.Product", b =>
-                {
-                    b.Navigation("Variants");
                 });
 #pragma warning restore 612, 618
         }

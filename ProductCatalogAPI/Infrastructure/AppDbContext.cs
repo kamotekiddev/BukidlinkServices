@@ -6,6 +6,7 @@ namespace ProductCatalogAPI.Infrastructure;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     public DbSet<Product> Products { get; set; }
+    public DbSet<ProductVariant> ProductVariants { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -13,19 +14,40 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(x => x.Id);
+            entity.HasKey(product => product.Id);
             entity
-                .Property(x => x.Id)
+                .Property(product => product.Id)
                 .ValueGeneratedOnAdd();
 
             entity
-                .Property(x => x.Name)
+                .Property(product => product.Name)
                 .IsRequired()
                 .HasMaxLength(255);
 
             entity
-                .Property(x => x.Description)
+                .Property(product => product.Description)
                 .HasMaxLength(255);
+        });
+
+        modelBuilder.Entity<ProductVariant>(entity =>
+        {
+            entity.HasKey(variant => variant.Id);
+            entity.Property(variant => variant.Id)
+                .ValueGeneratedOnAdd();
+
+            entity.OwnsOne(variant => variant.Sku,
+                builder => { builder.Property(sku => sku.Value).HasColumnName("sku").IsRequired(); });
+
+            entity.OwnsOne(variant => variant.Price, builder =>
+            {
+                builder.Property(price => price.Value).HasColumnName("price").IsRequired();
+                builder.Property(price => price.Currency).HasColumnName("currency").IsRequired();
+            });
+
+            entity.HasOne<Product>(variant => variant.Product)
+                .WithMany(product => product.Variants)
+                .HasForeignKey(variant => variant.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }
