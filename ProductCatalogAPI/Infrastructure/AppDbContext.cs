@@ -35,6 +35,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.Property(variant => variant.Id)
                 .ValueGeneratedOnAdd();
 
+            entity.Property(variant => variant.Name)
+                .IsRequired()
+                .HasMaxLength(255);
+
+            entity.HasIndex(variant => new { variant.ProductId, variant.Name })
+                .IsUnique();
+
             entity.OwnsOne(variant => variant.Sku,
                 builder => { builder.Property(sku => sku.Value).HasColumnName("sku").IsRequired(); });
 
