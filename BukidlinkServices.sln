@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShippingService", "Shipping
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalogAPI", "ProductCatalogAPI\ProductCatalogAPI.csproj", "{20D067F5-DCF3-4BE6-A3FF-249060F4291A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryAPI", "InventoryAPI\InventoryAPI.csproj", "{7069C535-7F65-414A-A0F5-E1B23C7DFE2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,8 +24,13 @@ Global
 		{20D067F5-DCF3-4BE6-A3FF-249060F4291A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20D067F5-DCF3-4BE6-A3FF-249060F4291A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20D067F5-DCF3-4BE6-A3FF-249060F4291A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7069C535-7F65-414A-A0F5-E1B23C7DFE2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7069C535-7F65-414A-A0F5-E1B23C7DFE2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7069C535-7F65-414A-A0F5-E1B23C7DFE2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7069C535-7F65-414A-A0F5-E1B23C7DFE2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{20D067F5-DCF3-4BE6-A3FF-249060F4291A} = {37160D5E-24FB-4828-8761-ECF74C4349C0}
+		{7069C535-7F65-414A-A0F5-E1B23C7DFE2B} = {48587EA2-3A1B-4D9F-8D6A-F821978C0142}
 	EndGlobalSection
 EndGlobal
