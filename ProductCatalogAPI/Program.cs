@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ProductCatalogAPI.Common.Errors;
 using ProductCatalogAPI.Infrastructure;
 using ProductCatalogAPI.Infrastructure.Messaging;
+using ProductCatalogAPI.Interface;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,7 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddCarter();
 builder.Services.AddSingleton<RabbitMqConnectionFactory>();
 builder.Services.AddSingleton<RabbitMqPublisher>();
+builder.Services.AddSingleton<IEventBus, RabbitMqEventBus>();
 
 
 var app = builder.Build();

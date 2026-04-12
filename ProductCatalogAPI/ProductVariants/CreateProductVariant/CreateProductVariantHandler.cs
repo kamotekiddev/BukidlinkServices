@@ -3,11 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using ProductCatalogAPI.Common.Exceptions;
 using ProductCatalogAPI.Domain;
 using ProductCatalogAPI.Domain.ValueObjects;
+using ProductCatalogAPI.Events;
 using ProductCatalogAPI.Infrastructure;
+using ProductCatalogAPI.Interface;
 
 namespace ProductCatalogAPI.ProductVariants.CreateProductVariant;
 
-public class CreateProductVariantHandler(AppDbContext dbContext, RabbitMqPublisher publisher)
+public class CreateProductVariantHandler(AppDbContext dbContext, IEventBus eventBus)
     : IRequestHandler<CreateProductVariantCommand, ProductVariant>
 {
     public async Task<ProductVariant> Handle(CreateProductVariantCommand request, CancellationToken cancellationToken)
@@ -31,18 +33,9 @@ public class CreateProductVariantHandler(AppDbContext dbContext, RabbitMqPublish
         dbContext.ProductVariants.Add(variant);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        await publisher.PublishAsync(
-            exchange: "product.events",
-            routingKey: "variant.created",
-            message: new
-            {
-                VariantId = variant.Id,
-                ProductId = variant.ProductId,
-                Name = variant.Name,
-                Sku = variant.Sku.Value,
-                Price = variant.Price.Value
-            });
-
+        await eventBus.PublishAsync<ProductVariantCreatedEvent>(
+            new ProductVariantCreatedEvent(variant.Id, variant.ProductId, variant.Name, variant.Sku.Value,
+                variant.Price.Value), cancellationToken);
 
         return variant;
     }
