@@ -2,21 +2,16 @@ using System.Text;
 using System.Text.Json;
 using RabbitMQ.Client;
 
-public class RabbitMqPublisher
+namespace ProductCatalogAPI.Infrastructure.Messaging;
+
+public class RabbitMqPublisher(RabbitMqConnectionFactory factory)
 {
-    private readonly RabbitMqConnectionFactory _factory;
-
-    public RabbitMqPublisher(RabbitMqConnectionFactory factory)
-    {
-        _factory = factory;
-    }
-
     public async Task PublishAsync<T>(
         string exchange,
         string routingKey,
         T message)
     {
-        var connection = await _factory.GetConnectionAsync();
+        var connection = await factory.GetConnectionAsync();
         var channel = await connection.CreateChannelAsync();
 
         await channel.ExchangeDeclareAsync(

@@ -1,7 +1,8 @@
 using Microsoft.Extensions.Options;
+using ProductCatalogAPI.Infrastructure.Messaging;
 using RabbitMQ.Client;
 
-namespace ProductCatalogAPI.Infrastructure.Messaging;
+namespace InventoryAPI.Infrastructure.Messaging;
 
 public class RabbitMqConnectionFactory(IOptions<RabbitMqOptions> options)
 {

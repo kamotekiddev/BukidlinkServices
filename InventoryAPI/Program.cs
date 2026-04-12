@@ -1,15 +1,23 @@
 using InventoryAPI.Infrastructure;
+using InventoryAPI.Infrastructure.Messaging;
+using InventoryAPI.Infrastructure.Messaging.Consumers;
 using Microsoft.EntityFrameworkCore;
+using ProductCatalogAPI.Infrastructure.Messaging;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddSingleton<RabbitMqConnectionFactory>();
+builder.Services.AddSingleton<RabbitMqConsumer>();
+builder.Services.AddHostedService<ProductVariantCreatedConsumer>();
 
 
 var app = builder.Build();

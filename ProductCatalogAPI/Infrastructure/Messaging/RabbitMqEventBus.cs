@@ -1,3 +1,4 @@
+using ProductCatalogAPI.Infrastructure.Messaging;
 using ProductCatalogAPI.Interface;
 
 public class RabbitMqEventBus : IEventBus
