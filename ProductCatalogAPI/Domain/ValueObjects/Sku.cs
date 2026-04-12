@@ -15,7 +15,7 @@ public record Sku
 
     public static Sku Create(string value)
     {
-        if (value.Length != MaxLength) throw new InvalidSkuException(value);
+        if (value.Length > MaxLength) throw new InvalidSkuException($"SKU exceeds the max length {value}");
         if (string.IsNullOrWhiteSpace(value))
             throw new InvalidSkuException("SKU cannot be empty.");
 
