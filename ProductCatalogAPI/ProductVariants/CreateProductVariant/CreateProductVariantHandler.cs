@@ -5,11 +5,12 @@ using ProductCatalogAPI.Domain;
 using ProductCatalogAPI.Domain.ValueObjects;
 using ProductCatalogAPI.Events;
 using ProductCatalogAPI.Infrastructure;
+using ProductCatalogAPI.Infrastructure.Messaging;
 using ProductCatalogAPI.Interface;
 
 namespace ProductCatalogAPI.ProductVariants.CreateProductVariant;
 
-public class CreateProductVariantHandler(AppDbContext dbContext, IEventBus eventBus)
+public class CreateProductVariantHandler(AppDbContext dbContext, IEventPublisher eventPublisher)
     : IRequestHandler<CreateProductVariantCommand, ProductVariant>
 {
     public async Task<ProductVariant> Handle(CreateProductVariantCommand request, CancellationToken cancellationToken)
@@ -33,7 +34,12 @@ public class CreateProductVariantHandler(AppDbContext dbContext, IEventBus event
         dbContext.ProductVariants.Add(variant);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        await eventBus.PublishAsync<ProductVariantCreatedEvent>(
+        await eventPublisher.PublishAsync<ProductVariantCreatedEvent>(
+            new PublisherOptions
+            {
+                Exchange = "product.events",
+                RoutingKey = "variant.created"
+            },
             new ProductVariantCreatedEvent(variant.Id, variant.ProductId, variant.Name, variant.Sku.Value,
                 variant.Price.Value), cancellationToken);
 

@@ -26,7 +26,7 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddCarter();
 builder.Services.AddSingleton<RabbitMqConnectionFactory>();
 builder.Services.AddSingleton<RabbitMqPublisher>();
-builder.Services.AddSingleton<IEventBus, RabbitMqEventBus>();
+builder.Services.AddSingleton<IEventPublisher, RabbitMqPublisher>();
 
 
 var app = builder.Build();
