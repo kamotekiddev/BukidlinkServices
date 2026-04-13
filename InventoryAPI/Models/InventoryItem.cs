@@ -1,6 +1,6 @@
 namespace InventoryAPI.Models;
 
-public class Inventory
+public class InventoryItem
 {
     public Guid Id { get; set; }
     public Guid ProductVariantId { get; set; }

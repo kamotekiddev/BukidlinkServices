@@ -1,11 +1,13 @@
+using InventoryAPI.Features.InventoryItems.CreateInventoryItem;
 using InventoryAPI.Infrastructure.Messaging.Events;
+using MediatR;
 
 namespace InventoryAPI.Infrastructure.Messaging.Consumers;
 
 public class ProductVariantCreatedConsumer(
-    RabbitMqConsumer consumer
-)
-    : BackgroundService
+    RabbitMqConsumer consumer,
+    IMediator mediator
+) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -16,7 +18,10 @@ public class ProductVariantCreatedConsumer(
                 RoutingKey = "variant.created",
                 QueueName = "product.variant.created"
             },
-            async (message) => { Console.WriteLine(message.ToString()); },
+            async (message) =>
+            {
+                await mediator.Send(new CreateInventoryItemCommand(message.VariantId, 0, 0), cancellationToken);
+            },
             cancellationToken: cancellationToken);
     }
 }

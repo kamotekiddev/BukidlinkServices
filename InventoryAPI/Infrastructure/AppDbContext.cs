@@ -5,7 +5,7 @@ namespace InventoryAPI.Infrastructure;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-    public DbSet<Inventory> Inventories { get; set; }
+    public DbSet<InventoryItem> Inventories { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

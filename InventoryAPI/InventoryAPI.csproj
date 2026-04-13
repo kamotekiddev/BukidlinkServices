@@ -32,7 +32,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Common\"/>
+        <Folder Include="Features\" />
     </ItemGroup>
 
 </Project>
