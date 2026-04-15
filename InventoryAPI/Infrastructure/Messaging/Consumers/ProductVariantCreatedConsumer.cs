@@ -6,7 +6,7 @@ namespace InventoryAPI.Infrastructure.Messaging.Consumers;
 
 public class ProductVariantCreatedConsumer(
     RabbitMqConsumer consumer,
-    IMediator mediator
+    IServiceScopeFactory scopeFactory
 ) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
@@ -20,7 +20,13 @@ public class ProductVariantCreatedConsumer(
             },
             async (message) =>
             {
-                await mediator.Send(new CreateInventoryItemCommand(message.VariantId, 0, 0), cancellationToken);
+                using var scope = scopeFactory.CreateScope();
+                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
+                await mediator.Send(new CreateInventoryItemCommand(message.VariantId, 0, 0),
+                    cancellationToken);
+
+                return true;
             },
             cancellationToken: cancellationToken);
     }

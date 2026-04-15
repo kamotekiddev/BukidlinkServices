@@ -1,3 +1,4 @@
+using System.Reflection;
 using InventoryAPI.Infrastructure;
 using InventoryAPI.Infrastructure.Messaging;
 using InventoryAPI.Infrastructure.Messaging.Consumers;
@@ -18,6 +19,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddSingleton<RabbitMqConnectionFactory>();
 builder.Services.AddSingleton<RabbitMqConsumer>();
 builder.Services.AddHostedService<ProductVariantCreatedConsumer>();
+
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly())
+);
 
 
 var app = builder.Build();

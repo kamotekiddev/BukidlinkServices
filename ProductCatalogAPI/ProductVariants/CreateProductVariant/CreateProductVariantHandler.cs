@@ -34,7 +34,7 @@ public class CreateProductVariantHandler(AppDbContext dbContext, IEventPublisher
         dbContext.ProductVariants.Add(variant);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        await eventPublisher.PublishAsync<ProductVariantCreatedEvent>(
+        await eventPublisher.PublishAsync(
             new PublisherOptions
             {
                 Exchange = "product.events",
