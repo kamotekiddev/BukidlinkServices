@@ -30,6 +30,4 @@ public abstract class ProblemDetailsFactory
             Title = "Validation failed",
         };
     }
-
-
 }
