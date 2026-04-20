@@ -3,7 +3,7 @@ using InventoryAPI.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace InventoryAPI.Features.InventoryItems.GetIventoryItems
+namespace InventoryAPI.Features.InventoryItems.GetInventoryItems
 {
     public class GetInventoryItemsQueryHandler(AppDbContext dbContext) : IRequestHandler<GetInventoryItemsQuery, ICollection<InventoryItem>>
     {

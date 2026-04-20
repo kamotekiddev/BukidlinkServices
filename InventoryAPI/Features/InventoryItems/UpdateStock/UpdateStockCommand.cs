@@ -1,8 +1,7 @@
 ﻿using InventoryAPI.Models;
 using MediatR;
 
-namespace InventoryAPI.Features.InventoryItems.UpdateInventoryItemStock
+namespace InventoryAPI.Features.InventoryItems.UpdateStock
 {
-
-    public record UpdateStockCommand(Guid inventoryItemId,int count, InventoryAction action) : IRequest<InventoryItem>;
+    public record UpdateStockCommand(Guid InventoryItemId, int Count, InventoryAction Action) : IRequest<InventoryItem>;
 }

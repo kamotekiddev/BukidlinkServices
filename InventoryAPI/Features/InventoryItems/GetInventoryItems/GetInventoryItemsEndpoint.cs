@@ -1,7 +1,7 @@
 ﻿using Carter;
 using MediatR;
 
-namespace InventoryAPI.Features.InventoryItems.GetIventoryItems
+namespace InventoryAPI.Features.InventoryItems.GetInventoryItems
 {
     public class GetInventoryItemsEndpoint : ICarterModule
     {
