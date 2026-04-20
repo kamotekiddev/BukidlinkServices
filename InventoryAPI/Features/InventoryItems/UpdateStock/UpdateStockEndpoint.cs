@@ -7,7 +7,7 @@ namespace InventoryAPI.Features.InventoryItems.UpdateInventoryItemStock
     {
         void ICarterModule.AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPatch("/inventory/{inventoryItemId:guid}/stocks", async (Guid inventoryItemId, UpdateStockCommand request, IMediator sender) =>
+            app.MapPatch("/inventories/{inventoryItemId:guid}/stocks", async (Guid inventoryItemId, UpdateStockCommand request, IMediator sender) =>
             {
                 var updatedInventoryItem = await sender.Send(new UpdateStockCommand(inventoryItemId, request.count, request.action));
                 Results.Ok(updatedInventoryItem);
