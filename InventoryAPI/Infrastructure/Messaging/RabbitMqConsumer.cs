@@ -9,7 +9,7 @@ public class RabbitMqConsumer(RabbitMqConnectionFactory factory)
 {
     public async Task ConsumeAsync<T>(
         ConsumerOptions options,
-        Func<T, Task> handler,
+        Func<T, Task<bool>> handler,
         CancellationToken cancellationToken = default)
     {
         var connection = await factory.GetConnectionAsync();
@@ -39,21 +39,40 @@ public class RabbitMqConsumer(RabbitMqConnectionFactory factory)
         consumer.ReceivedAsync += async (_, args) =>
         {
             var json = Encoding.UTF8.GetString(args.Body.ToArray());
-
             var message = JsonSerializer.Deserialize<T>(json);
 
-            if (message is not null)
+            if (message is null)
             {
-                await handler(message);
+                await channel.BasicAckAsync(args.DeliveryTag, false, cancellationToken);
+                return;
             }
 
-            // ✅ Auto ACK (for now - simple)
-            await channel.BasicAckAsync(args.DeliveryTag, multiple: false, cancellationToken: cancellationToken);
+            try
+            {
+                var success = await handler(message);
+                if (success)
+                {
+                    await channel.BasicAckAsync(args.DeliveryTag, false, cancellationToken);
+                    return;
+                }
+
+                await channel.BasicNackAsync(args.DeliveryTag, false, requeue: true,
+                    cancellationToken: cancellationToken);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                await channel.BasicNackAsync(
+                    args.DeliveryTag,
+                    false,
+                    requeue: false,
+                    cancellationToken);
+            }
         };
 
         await channel.BasicConsumeAsync(
             queue: options.QueueName,
-            autoAck: false, // we manually ACK now
+            autoAck: false,
             consumer: consumer,
             cancellationToken: cancellationToken);
 

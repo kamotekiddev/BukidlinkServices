@@ -1,15 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProductCatalogService", "ProductCatalogService", "{37160D5E-24FB-4828-8761-ECF74C4349C0}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuthService", "AuthService", "{C1F70ACF-5EA8-4747-B326-9BE2A24270AC}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InventoryService", "InventoryService", "{48587EA2-3A1B-4D9F-8D6A-F821978C0142}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OrderService", "OrderService", "{524C145D-03BF-4E35-AD0D-F5D5EC90E4A8}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShippingService", "ShippingService", "{E6CDEEB9-3C98-4164-968B-53A0D0E35ED9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalogAPI", "ProductCatalogAPI\ProductCatalogAPI.csproj", "{20D067F5-DCF3-4BE6-A3FF-249060F4291A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryAPI", "InventoryAPI\InventoryAPI.csproj", "{7069C535-7F65-414A-A0F5-E1B23C7DFE2B}"
@@ -30,7 +20,5 @@ Global
 		{7069C535-7F65-414A-A0F5-E1B23C7DFE2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{20D067F5-DCF3-4BE6-A3FF-249060F4291A} = {37160D5E-24FB-4828-8761-ECF74C4349C0}
-		{7069C535-7F65-414A-A0F5-E1B23C7DFE2B} = {48587EA2-3A1B-4D9F-8D6A-F821978C0142}
 	EndGlobalSection
 EndGlobal

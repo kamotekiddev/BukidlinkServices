@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  # =========================
+  # PRODUCT SERVICE DB
+  # =========================
+  product-db:
+    image: postgres:16
+    container_name: product_service_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: product_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - product_db_data:/var/lib/postgresql/data
+
+  # =========================
+  # INVENTORY SERVICE DB
+  # =========================
+  inventory-db:
+    image: postgres:16
+    container_name: inventory_service_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: inventory_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - inventory_db_data:/var/lib/postgresql/data
+
+  # =========================
+  # RABBITMQ 4 + MANAGEMENT
+  # =========================
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+# =========================
+# VOLUMES
+# =========================
+volumes:
+  product_db_data:
+  inventory_db_data:
+  rabbitmq_data:
