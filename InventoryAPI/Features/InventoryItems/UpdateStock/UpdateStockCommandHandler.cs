@@ -8,20 +8,24 @@ namespace InventoryAPI.Features.InventoryItems.UpdateInventoryItemStock
     {
         public async Task<InventoryItem> Handle(UpdateStockCommand request, CancellationToken cancellationToken)
         {
-           var existingInventoryItem = await dbContext.Inventories.FindAsync(request.inventoryItemId, cancellationToken);
+            var existingInventoryItem = await dbContext.Inventories.FindAsync(request.inventoryItemId, cancellationToken);
 
             if (existingInventoryItem is null) throw new Exception($"Cannot find inventory item with id: {request.inventoryItemId}");
 
-            if(request.action == InventoryAction.Increase)
+            switch(request.action)
             {
-                existingInventoryItem.IncreaseQuantity(request.count);
-            }
+                case InventoryAction.Increase:
+                    existingInventoryItem.IncreaseQuantity(request.count);
+                    break;
 
-            if(request.action == InventoryAction.Decrease)
-            {
-                existingInventoryItem.DecreaseQuantity(request.count);
-            }
+                case InventoryAction.Decrease:
+                    existingInventoryItem.DecreaseQuantity(request.count);
+                    break;
 
+                default:
+                    throw new Exception("Invalid action");
+            }
+   
             await dbContext.SaveChangesAsync(cancellationToken);
             return existingInventoryItem;
         }
