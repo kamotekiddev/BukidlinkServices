@@ -8,4 +8,17 @@ public class InventoryItem
     public int ReservedQuantity { get; set; }
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public int Available => Quantity - ReservedQuantity;
+
+    public void IncreaseQuantity(int count)
+    {
+        Quantity += count;
+    }
+
+    public void DecreaseQuantity(int count)
+    {
+        if (count > Available) throw new Exception("Not enough stock.");
+        Quantity -= count;
+    }
 }
