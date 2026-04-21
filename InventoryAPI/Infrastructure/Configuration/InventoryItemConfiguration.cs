@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InventoryAPI.Infrastructure.Configuration;
 
-public class InventoryConfiguration : IEntityTypeConfiguration<InventoryItem>
+public class InventoryItemConfiguration : IEntityTypeConfiguration<InventoryItem>
 {
     public void Configure(EntityTypeBuilder<InventoryItem> builder)
     {
@@ -19,11 +19,13 @@ public class InventoryConfiguration : IEntityTypeConfiguration<InventoryItem>
         builder.Property(i => i.Quantity)
             .IsRequired();
 
-        builder.Property(i => i.ReservedQuantity)
-            .IsRequired();
-
         builder.HasIndex(i => i.ProductVariantId)
             .IsUnique();
+
+        builder.HasMany(inventoryItem => inventoryItem.Reservations)
+            .WithOne()
+            .HasForeignKey(reservation => reservation.InventoryItemId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(i => i.CreatedAt)
             .HasDefaultValueSql("NOW()");

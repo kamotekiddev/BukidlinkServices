@@ -21,7 +21,6 @@ public class CreateInventoryItemCommandHandler(AppDbContext dbContext)
         {
             ProductVariantId = request.ProductVariantId,
             Quantity = request.Quantity,
-            ReservedQuantity = request.ReservedQuantity
         };
 
         dbContext.Inventories.Add(productVariant);

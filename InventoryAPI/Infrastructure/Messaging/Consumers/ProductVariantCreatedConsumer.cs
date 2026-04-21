@@ -23,7 +23,7 @@ public class ProductVariantCreatedConsumer(
                 using var scope = scopeFactory.CreateScope();
                 var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-                await mediator.Send(new CreateInventoryItemCommand(message.VariantId, 0, 0),
+                await mediator.Send(new CreateInventoryItemCommand(message.VariantId, 0),
                     cancellationToken);
 
                 return true;
