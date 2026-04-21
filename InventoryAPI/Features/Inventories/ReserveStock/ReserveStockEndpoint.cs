@@ -1,7 +1,7 @@
 using Carter;
 using MediatR;
 
-namespace InventoryAPI.Features.InventoryItems.ReserveStock;
+namespace InventoryAPI.Features.Inventories.ReserveStock;
 
 public class ReserveStockEndpoint : ICarterModule
 {

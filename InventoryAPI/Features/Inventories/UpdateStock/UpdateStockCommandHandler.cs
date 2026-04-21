@@ -2,11 +2,11 @@
 using InventoryAPI.Models;
 using MediatR;
 
-namespace InventoryAPI.Features.InventoryItems.UpdateStock
+namespace InventoryAPI.Features.Inventories.UpdateStock
 {
-    public class UpdateStockCommandHandler(AppDbContext dbContext) : IRequestHandler<UpdateStockCommand, InventoryItem>
+    public class UpdateStockCommandHandler(AppDbContext dbContext) : IRequestHandler<UpdateStockCommand, Inventory>
     {
-        public async Task<InventoryItem> Handle(UpdateStockCommand request, CancellationToken cancellationToken)
+        public async Task<Inventory> Handle(UpdateStockCommand request, CancellationToken cancellationToken)
         {
             var existingInventoryItem =
                 await dbContext.Inventories.FindAsync(request.InventoryItemId, cancellationToken);

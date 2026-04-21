@@ -1,4 +1,4 @@
-using InventoryAPI.Features.InventoryItems.CreateInventoryItem;
+using InventoryAPI.Features.Inventories.CreateInventory;
 using InventoryAPI.Infrastructure.Messaging.Events;
 using MediatR;
 
@@ -23,7 +23,7 @@ public class ProductVariantCreatedConsumer(
                 using var scope = scopeFactory.CreateScope();
                 var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-                await mediator.Send(new CreateInventoryItemCommand(message.VariantId, 0),
+                await mediator.Send(new CreateInventoryCommand(message.VariantId, 0),
                     cancellationToken);
 
                 return true;

@@ -3,12 +3,12 @@ using InventoryAPI.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace InventoryAPI.Features.InventoryItems.ReserveStock;
+namespace InventoryAPI.Features.Inventories.ReserveStock;
 
 public class ReserveStockCommandHandler(AppDbContext dbContext)
-    : IRequestHandler<ReserveStockCommand, InventoryItem>
+    : IRequestHandler<ReserveStockCommand, Inventory>
 {
-    public async Task<InventoryItem> Handle(ReserveStockCommand request, CancellationToken cancellationToken)
+    public async Task<Inventory> Handle(ReserveStockCommand request, CancellationToken cancellationToken)
     {
         var inventoryItem = await dbContext.Inventories
             .Include(inventoryItem => inventoryItem.Reservations)

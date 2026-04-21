@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InventoryAPI.Infrastructure.Configuration;
 
-public class InventoryItemConfiguration : IEntityTypeConfiguration<InventoryItem>
+public class InventoryConfiguration : IEntityTypeConfiguration<Inventory>
 {
-    public void Configure(EntityTypeBuilder<InventoryItem> builder)
+    public void Configure(EntityTypeBuilder<Inventory> builder)
     {
         builder.HasKey(i => i.Id);
 

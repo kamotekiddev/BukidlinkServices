@@ -3,12 +3,12 @@ using InventoryAPI.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace InventoryAPI.Features.InventoryItems.GetInventoryItems
+namespace InventoryAPI.Features.Inventories.GetInventories
 {
-    public class GetInventoryItemsQueryHandler(AppDbContext dbContext)
-        : IRequestHandler<GetInventoryItemsQuery, ICollection<InventoryItem>>
+    public class GetInventoriesQueryHandler(AppDbContext dbContext)
+        : IRequestHandler<GetInventoriesQuery, ICollection<Inventory>>
     {
-        public async Task<ICollection<InventoryItem>> Handle(GetInventoryItemsQuery request,
+        public async Task<ICollection<Inventory>> Handle(GetInventoriesQuery request,
             CancellationToken cancellationToken)
         {
             return await dbContext.Inventories

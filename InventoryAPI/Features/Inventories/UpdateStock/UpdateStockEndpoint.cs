@@ -1,7 +1,7 @@
 ﻿using Carter;
 using MediatR;
 
-namespace InventoryAPI.Features.InventoryItems.UpdateStock
+namespace InventoryAPI.Features.Inventories.UpdateStock
 
 {
     public class UpdateStockEndpoint : ICarterModule
