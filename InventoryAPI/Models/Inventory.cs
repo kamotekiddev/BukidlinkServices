@@ -1,13 +1,10 @@
 namespace InventoryAPI.Models;
 
-public class Inventory
+public class Inventory : BaseEntity
 {
     public Guid Id { get; init; }
     public Guid ProductVariantId { get; init; }
     public int Quantity { get; set; }
-
-    public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
-    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 
     public List<InventoryReservation> Reservations { get; init; } = [];
 

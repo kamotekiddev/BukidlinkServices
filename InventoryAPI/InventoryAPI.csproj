@@ -31,4 +31,8 @@
         <PackageReference Include="Scalar.AspNetCore" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Features\AuditLogs\" />
+    </ItemGroup>
+
 </Project>
