@@ -12,7 +12,7 @@ public class StockReservedAuditHandler(AppDbContext dbContext) : INotificationHa
     {
         var reserveLog = new AuditLog
         {
-            Action = nameof(InventoryAction.Reserve),
+            Action = InventoryAction.Reserve,
             EntityId = notification.InventoryItemId,
             EntityName = nameof(Inventory),
             OrderId = notification.OrderId,

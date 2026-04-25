@@ -23,7 +23,7 @@ public class GetAuditLogsQueryHandler(AppDbContext dbContext) : IRequestHandler<
 
         if (request.Action.HasValue)
         {
-            query = query.Where(x => x.Action == request.Action.ToString());
+            query = query.Where(x => x.Action == request.Action);
         }
 
         return await query.ToArrayAsync(ct);

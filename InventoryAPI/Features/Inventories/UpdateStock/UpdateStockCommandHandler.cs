@@ -1,35 +1,32 @@
-﻿using InventoryAPI.Infrastructure;
+﻿using InventoryAPI.Events;
+using InventoryAPI.Infrastructure;
 using InventoryAPI.Models;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryAPI.Features.Inventories.UpdateStock
 {
-    public class UpdateStockCommandHandler(AppDbContext dbContext) : IRequestHandler<UpdateStockCommand, Inventory>
+    public class UpdateStockCommandHandler(AppDbContext dbContext, IMediator sender)
+        : IRequestHandler<UpdateStockCommand, Inventory>
     {
-        public async Task<Inventory> Handle(UpdateStockCommand request, CancellationToken cancellationToken)
+        public async Task<Inventory> Handle(UpdateStockCommand request, CancellationToken ct)
         {
-            var existingInventoryItem =
-                await dbContext.Inventories.FindAsync(request.InventoryItemId, cancellationToken);
+            var inventory = await dbContext.Inventories
+                .FirstOrDefaultAsync(i => i.Id == request.InventoryItemId, ct);
 
-            if (existingInventoryItem is null)
+            if (inventory is null)
                 throw new Exception($"Cannot find inventory item with id: {request.InventoryItemId}");
 
-            switch (request.Action)
-            {
-                case InventoryAction.Increase:
-                    existingInventoryItem.IncreaseQuantity(request.Count);
-                    break;
+            if (request.Action == InventoryAction.Increase)
+                inventory.IncreaseQuantity(request.Count);
+            else if (request.Action == InventoryAction.Decrease)
+                inventory.DecreaseQuantity(request.Count);
+            else
+                throw new Exception("Invalid action");
 
-                case InventoryAction.Decrease:
-                    existingInventoryItem.DecreaseQuantity(request.Count);
-                    break;
-
-                default:
-                    throw new Exception("Invalid action");
-            }
-
-            await dbContext.SaveChangesAsync(cancellationToken);
-            return existingInventoryItem;
+            await dbContext.SaveChangesAsync(ct);
+            await sender.Publish(new StockUpdated(inventory.Id, request.Count, request.Action), ct);
+            return inventory;
         }
     }
 }
