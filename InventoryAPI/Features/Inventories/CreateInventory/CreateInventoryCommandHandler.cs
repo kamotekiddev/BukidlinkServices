@@ -4,12 +4,12 @@ using InventoryAPI.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace InventoryAPI.Features.InventoryItems.CreateInventoryItem;
+namespace InventoryAPI.Features.Inventories.CreateInventory;
 
-public class CreateInventoryItemCommandHandler(AppDbContext dbContext)
-    : IRequestHandler<CreateInventoryItemCommand, InventoryItem>
+public class CreateInventoryCommandHandler(AppDbContext dbContext)
+    : IRequestHandler<CreateInventoryCommand, Inventory>
 {
-    public async Task<InventoryItem> Handle(CreateInventoryItemCommand request, CancellationToken cancellationToken)
+    public async Task<Inventory> Handle(CreateInventoryCommand request, CancellationToken cancellationToken)
     {
         var existingInventoryItem =
             await dbContext.Inventories.FirstOrDefaultAsync(i => i.ProductVariantId == request.ProductVariantId,
@@ -17,11 +17,10 @@ public class CreateInventoryItemCommandHandler(AppDbContext dbContext)
 
         if (existingInventoryItem != null) throw new ProductVariantAlreadyExistException(request.ProductVariantId);
 
-        var productVariant = new InventoryItem
+        var productVariant = new Inventory
         {
             ProductVariantId = request.ProductVariantId,
             Quantity = request.Quantity,
-            ReservedQuantity = request.ReservedQuantity
         };
 
         dbContext.Inventories.Add(productVariant);
