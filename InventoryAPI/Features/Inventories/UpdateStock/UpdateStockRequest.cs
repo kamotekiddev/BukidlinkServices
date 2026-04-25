@@ -2,4 +2,4 @@ using InventoryAPI.Models;
 
 namespace InventoryAPI.Features.Inventories.UpdateStock;
 
-public record UpdateStockRequestDto(int Count, InventoryAction Action);
+public record UpdateStockRequest(int Count, InventoryAction Action);

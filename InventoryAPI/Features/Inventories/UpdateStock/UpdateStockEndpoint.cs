@@ -8,11 +8,11 @@ namespace InventoryAPI.Features.Inventories.UpdateStock
     {
         void ICarterModule.AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPut("/inventories/{inventoryItemId:guid}/stocks",
-                async (Guid inventoryItemId, UpdateStockRequestDto request, IMediator sender) =>
+            app.MapPut("/inventories/{inventoryId:guid}/stocks",
+                async (Guid inventoryId, UpdateStockRequest request, IMediator sender) =>
                 {
                     var updatedInventoryItem =
-                        await sender.Send(new UpdateStockCommand(inventoryItemId, request.Count, request.Action));
+                        await sender.Send(new UpdateStockCommand(inventoryId, request.Count, request.Action));
                     return Results.Ok(updatedInventoryItem);
                 });
         }

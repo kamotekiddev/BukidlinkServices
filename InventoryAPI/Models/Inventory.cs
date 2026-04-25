@@ -22,9 +22,9 @@ public class Inventory : BaseEntity
         Quantity -= count;
     }
 
-    public void Reserve(int count)
+    public void Reserve(int count, Guid orderId)
     {
         if (count > AvailableQuantity) throw new Exception("Not enough stock.");
-        Reservations.Add(new InventoryReservation { InventoryItemId = Id, Quantity = count });
+        Reservations.Add(new InventoryReservation { InventoryId = Id, OrderId = orderId, Quantity = count });
     }
 }

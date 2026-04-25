@@ -25,6 +25,10 @@ public class AuditLogConfiguration : IEntityTypeConfiguration<AuditLog>
             .IsRequired()
             .HasMaxLength(100);
 
+        builder.Property(auditLog => auditLog.OrderId);
+
+        builder.HasIndex(auditLog => auditLog.OrderId);
+
         builder.Property(auditLog => auditLog.Data)
             .HasColumnType("jsonb");
 

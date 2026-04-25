@@ -24,7 +24,7 @@ public class InventoryConfiguration : IEntityTypeConfiguration<Inventory>
 
         builder.HasMany(inventoryItem => inventoryItem.Reservations)
             .WithOne()
-            .HasForeignKey(reservation => reservation.InventoryItemId)
+            .HasForeignKey(reservation => reservation.InventoryId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(i => i.CreatedAt)

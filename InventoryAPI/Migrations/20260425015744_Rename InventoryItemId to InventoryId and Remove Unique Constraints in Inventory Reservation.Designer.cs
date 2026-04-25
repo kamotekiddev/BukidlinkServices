@@ -3,6 +3,7 @@ using System;
 using InventoryAPI.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace InventoryAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260425015744_Rename InventoryItemId to InventoryId and Remove Unique Constraints in Inventory Reservation")]
+    partial class RenameInventoryItemIdtoInventoryIdandRemoveUniqueConstraintsinInventoryReservation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,9 +53,6 @@ namespace InventoryAPI.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<Guid?>("OrderId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -61,8 +61,6 @@ namespace InventoryAPI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EntityId");
-
-                    b.HasIndex("OrderId");
 
                     b.ToTable("AuditLogs");
                 });

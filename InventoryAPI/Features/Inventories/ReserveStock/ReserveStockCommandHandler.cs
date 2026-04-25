@@ -1,3 +1,4 @@
+using InventoryAPI.Features.AuditLogs.StockReservedEvent;
 using InventoryAPI.Infrastructure;
 using InventoryAPI.Models;
 using MediatR;
@@ -5,20 +6,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InventoryAPI.Features.Inventories.ReserveStock;
 
-public class ReserveStockCommandHandler(AppDbContext dbContext)
+public class ReserveStockCommandHandler(AppDbContext dbContext, IMediator sender)
     : IRequestHandler<ReserveStockCommand, Inventory>
 {
     public async Task<Inventory> Handle(ReserveStockCommand request, CancellationToken cancellationToken)
     {
-        var inventoryItem = await dbContext.Inventories
+        var inventory = await dbContext.Inventories
             .Include(inventoryItem => inventoryItem.Reservations)
             .FirstOrDefaultAsync(inventoryItem => inventoryItem.Id == request.InventoryItemId, cancellationToken);
 
-        if (inventoryItem is null)
+        if (inventory is null)
             throw new Exception($"Cannot find inventory item with id: {request.InventoryItemId}");
 
-        inventoryItem.Reserve(request.Quantity);
+        inventory.Reserve(request.Quantity, request.OrderId);
+
         await dbContext.SaveChangesAsync(cancellationToken);
-        return inventoryItem;
+
+        await sender.Publish(new StockReservedEvent(inventory.Id, request.OrderId, request.Quantity, DateTime.UtcNow),
+            cancellationToken);
+
+        return inventory;
     }
 }

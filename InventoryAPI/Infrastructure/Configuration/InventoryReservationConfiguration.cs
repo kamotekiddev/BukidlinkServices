@@ -12,10 +12,14 @@ public class InventoryReservationConfiguration : IEntityTypeConfiguration<Invent
         builder.Property(reservation => reservation.Id)
             .ValueGeneratedOnAdd();
 
-        builder.Property(reservation => reservation.InventoryItemId)
+        builder.Property(reservation => reservation.InventoryId)
             .IsRequired();
 
-        builder.HasIndex(reservation => reservation.InventoryItemId)
+        builder.HasIndex(reservation => reservation.InventoryId);
+        builder.Property(reservation => reservation.OrderId)
+            .IsRequired();
+
+        builder.HasIndex(reservation => reservation.OrderId)
             .IsUnique();
 
         builder.Property(reservation => reservation.Quantity)
