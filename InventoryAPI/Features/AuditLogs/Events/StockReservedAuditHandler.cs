@@ -1,13 +1,14 @@
 using System.Text.Json;
+using InventoryAPI.Events;
 using InventoryAPI.Infrastructure;
 using InventoryAPI.Models;
 using MediatR;
 
-namespace InventoryAPI.Features.AuditLogs.StockReservedEvent;
+namespace InventoryAPI.Features.AuditLogs.Events;
 
-public class StockReservedEventHandler(AppDbContext dbContext) : INotificationHandler<StockReservedEvent>
+public class StockReservedAuditHandler(AppDbContext dbContext) : INotificationHandler<StockReserved>
 {
-    public async Task Handle(StockReservedEvent notification, CancellationToken ct)
+    public async Task Handle(StockReserved notification, CancellationToken ct)
     {
         var reserveLog = new AuditLog
         {

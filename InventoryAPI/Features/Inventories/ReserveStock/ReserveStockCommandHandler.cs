@@ -1,4 +1,4 @@
-using InventoryAPI.Features.AuditLogs.StockReservedEvent;
+using InventoryAPI.Events;
 using InventoryAPI.Infrastructure;
 using InventoryAPI.Models;
 using MediatR;
@@ -22,7 +22,7 @@ public class ReserveStockCommandHandler(AppDbContext dbContext, IMediator sender
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        await sender.Publish(new StockReservedEvent(inventory.Id, request.OrderId, request.Quantity, DateTime.UtcNow),
+        await sender.Publish(new StockReserved(inventory.Id, request.OrderId, request.Quantity, DateTime.UtcNow),
             cancellationToken);
 
         return inventory;

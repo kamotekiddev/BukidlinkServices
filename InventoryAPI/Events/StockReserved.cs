@@ -1,8 +1,8 @@
 using MediatR;
 
-namespace InventoryAPI.Features.AuditLogs.StockReservedEvent;
+namespace InventoryAPI.Events;
 
-public record StockReservedEvent(
+public record StockReserved(
     Guid InventoryItemId,
     Guid? OrderId,
     int Quantity,
