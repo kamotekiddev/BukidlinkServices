@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalogAPI", "Produc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryAPI", "InventoryAPI\InventoryAPI.csproj", "{7069C535-7F65-414A-A0F5-E1B23C7DFE2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderAPI", "OrderAPI\OrderAPI.csproj", "{D1EB15B0-C66E-424E-841B-393F0F9BED7E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,6 +20,10 @@ Global
 		{7069C535-7F65-414A-A0F5-E1B23C7DFE2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7069C535-7F65-414A-A0F5-E1B23C7DFE2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7069C535-7F65-414A-A0F5-E1B23C7DFE2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1EB15B0-C66E-424E-841B-393F0F9BED7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1EB15B0-C66E-424E-841B-393F0F9BED7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1EB15B0-C66E-424E-841B-393F0F9BED7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1EB15B0-C66E-424E-841B-393F0F9BED7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
