@@ -14,6 +14,8 @@ public class Order
     public OrderStatus Status { get; private set; }
     public List<OrderItem> OrderItems { get; private set; } = new();
 
+    public decimal TotalPrice => OrderItems.Sum(item => item.Quantity * item.SellPrice);
+    
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 
     private Order()
