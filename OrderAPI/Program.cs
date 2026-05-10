@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.Json.Serialization;
 using Carter;
 using Microsoft.EntityFrameworkCore;
 using OrderAPI.Infrastructure;
@@ -19,6 +20,11 @@ builder.Services.AddMediatR(cfg =>
 );
 
 builder.Services.AddCarter();
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 var app = builder.Build();
 
