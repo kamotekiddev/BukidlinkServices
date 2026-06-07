@@ -34,7 +34,7 @@ services:
       - inventory_db_data:/var/lib/postgresql/data
 
   # =========================
-  # INVENTORY SERVICE DB
+  # ORDER SERVICE DB
   # =========================
   order-db:
     image: postgres:16
