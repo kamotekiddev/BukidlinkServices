@@ -1,16 +1,15 @@
+using BuildingBlocks.Contracts;
+using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ProductCatalogAPI.Common.Exceptions;
 using ProductCatalogAPI.Domain;
 using ProductCatalogAPI.Domain.ValueObjects;
-using ProductCatalogAPI.Events;
 using ProductCatalogAPI.Infrastructure;
-using ProductCatalogAPI.Infrastructure.Messaging;
-using ProductCatalogAPI.Interface;
 
 namespace ProductCatalogAPI.ProductVariants.CreateProductVariant;
 
-public class CreateProductVariantHandler(AppDbContext dbContext, IEventPublisher eventPublisher)
+public class CreateProductVariantHandler(AppDbContext dbContext, ISendEndpoint sender)
     : IRequestHandler<CreateProductVariantCommand, ProductVariant>
 {
     public async Task<ProductVariant> Handle(CreateProductVariantCommand request, CancellationToken cancellationToken)
@@ -34,14 +33,13 @@ public class CreateProductVariantHandler(AppDbContext dbContext, IEventPublisher
         dbContext.ProductVariants.Add(variant);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        await eventPublisher.PublishAsync(
-            new PublisherOptions
-            {
-                Exchange = "product.events",
-                RoutingKey = "variant.created"
-            },
-            new ProductVariantCreatedEvent(variant.Id, variant.ProductId, variant.Name, variant.Sku.Value,
-                variant.Price.Value), cancellationToken);
+        await sender.Send(
+            new ProductVariantCreatedEvent(variant.Id,
+                variant.ProductId,
+                variant.Name,
+                variant.Sku.Value,
+                variant.Price.Value),
+            cancellationToken);
 
         return variant;
     }

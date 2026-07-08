@@ -1,12 +1,12 @@
 using BuildingBlocks.Contracts;
+using MassTransit;
 using MediatR;
 using OrderAPI.Infrastructure;
-using OrderAPI.Infrastructure.Messaging;
 using OrderAPI.Models;
 
 namespace OrderAPI.Features.Orders.CreateOrder;
 
-public class CreateOrderCommandHandler(AppDbContext db, IEventPublisher publisher)
+public class CreateOrderCommandHandler(AppDbContext db, ISendEndpoint sender)
     : IRequestHandler<CreateOrderCommand, Order>
 {
     public async Task<Order> Handle(CreateOrderCommand request, CancellationToken ct)
@@ -24,17 +24,9 @@ public class CreateOrderCommandHandler(AppDbContext db, IEventPublisher publishe
         var order = Order.Create(Guid.NewGuid(), orderItems);
 
         db.Orders.Add(order);
-
         await db.SaveChangesAsync(ct);
 
-        await publisher.PublishAsync(new PublisherOptions
-            {
-                Exchange = "order.events",
-                RoutingKey = "order.created"
-            },
-            new OrderPlacedEvent(order.Id, order.UserId, order.Status.ToString()),
-            ct);
-
+        await sender.Send(new OrderPlacedEvent(order.Id, Guid.Empty, order.Status.ToString()), ct);
         return order;
     }
 }

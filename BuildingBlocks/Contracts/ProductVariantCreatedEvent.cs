@@ -1,4 +1,4 @@
-namespace InventoryAPI.Infrastructure.Messaging.Events;
+namespace BuildingBlocks.Contracts;
 
 public record ProductVariantCreatedEvent(
     Guid VariantId,
