@@ -1,17 +1,15 @@
 using System.Reflection;
 using Carter;
 using FluentValidation;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using ProductCatalogAPI.Common.Errors;
 using ProductCatalogAPI.Infrastructure;
-using ProductCatalogAPI.Infrastructure.Messaging;
-using ProductCatalogAPI.Interface;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
-builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -23,11 +21,21 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly())
 );
 
-builder.Services.AddCarter();
-builder.Services.AddSingleton<RabbitMqConnectionFactory>();
-builder.Services.AddSingleton<RabbitMqPublisher>();
-builder.Services.AddSingleton<IEventPublisher, RabbitMqPublisher>();
+builder.Services.AddMassTransit(busConfigurator =>
+{
+    var rabbitMqConfig = builder.Configuration.GetSection("RabbitMq");
+    busConfigurator.UsingRabbitMq((ctx, cfg) =>
+    {
+        cfg.Host(rabbitMqConfig["Host"], "/", host =>
+        {
+            host.Username(rabbitMqConfig["Username"]!);
+            host.Password(rabbitMqConfig["Password"]!);
+        });
+        cfg.ConfigureEndpoints(ctx);
+    });
+});
 
+builder.Services.AddCarter();
 
 var app = builder.Build();
 app.UseGlobalExceptionHandler();

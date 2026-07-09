@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
 using Carter;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using OrderAPI.Infrastructure;
 using Scalar.AspNetCore;
@@ -18,6 +19,20 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly())
 );
+
+builder.Services.AddMassTransit(busConfigurator =>
+{
+    busConfigurator.UsingRabbitMq((context, cfg) =>
+    {
+        var rabbitMqConfig = builder.Configuration.GetSection("RabbitMq");
+        cfg.ConfigureEndpoints(context);
+        cfg.Host(rabbitMqConfig["Host"], rabbitMqConfig["VirtualHost"], hostConfigurator =>
+        {
+            hostConfigurator.Username(rabbitMqConfig["Username"]!);
+            hostConfigurator.Password(rabbitMqConfig["Password"]!);
+        });
+    });
+});
 
 builder.Services.AddCarter();
 
