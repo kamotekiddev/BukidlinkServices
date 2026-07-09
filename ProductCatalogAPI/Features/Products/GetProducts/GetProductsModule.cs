@@ -1,8 +1,8 @@
 using Carter;
 using MediatR;
-using ProductCatalogAPI.Products.CreateProduct;
+using ProductCatalogAPI.Features.Products.CreateProduct;
 
-namespace ProductCatalogAPI.Products.GetProducts;
+namespace ProductCatalogAPI.Features.Products.GetProducts;
 
 public class GetProductsModule : ICarterModule
 {

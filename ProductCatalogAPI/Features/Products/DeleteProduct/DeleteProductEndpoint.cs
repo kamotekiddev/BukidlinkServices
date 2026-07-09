@@ -1,8 +1,8 @@
 using Carter;
 using MediatR;
-using ProductCatalogAPI.Products.CreateProduct;
+using ProductCatalogAPI.Features.Products.CreateProduct;
 
-namespace ProductCatalogAPI.Products.DeleteProduct;
+namespace ProductCatalogAPI.Features.Products.DeleteProduct;
 
 public class DeleteProductEndpoint : ICarterModule
 {

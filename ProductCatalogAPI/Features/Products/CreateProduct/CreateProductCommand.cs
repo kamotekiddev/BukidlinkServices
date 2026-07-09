@@ -1,6 +1,6 @@
 using MediatR;
 using ProductCatalogAPI.Domain;
 
-namespace ProductCatalogAPI.Products.CreateProduct;
+namespace ProductCatalogAPI.Features.Products.CreateProduct;
 
 public record CreateProductCommand(string Name, string Description) : IRequest<Product>;

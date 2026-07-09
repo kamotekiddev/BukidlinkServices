@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ProductCatalogAPI.Domain;
 using ProductCatalogAPI.Infrastructure;
 
-namespace ProductCatalogAPI.Products.GetProducts;
+namespace ProductCatalogAPI.Features.Products.GetProducts;
 
 public class GetProductsHandler(AppDbContext dbContext) : IRequestHandler<GetProductsQuery, IEnumerable<Product>>
 {

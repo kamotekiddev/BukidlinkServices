@@ -3,7 +3,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ProductCatalogAPI.Products.CreateProduct;
+namespace ProductCatalogAPI.Features.Products.CreateProduct;
 
 public class CreateProductModule : ICarterModule
 {

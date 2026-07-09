@@ -3,7 +3,7 @@ using ProductCatalogAPI.Common.Exceptions;
 using ProductCatalogAPI.Domain;
 using ProductCatalogAPI.Infrastructure;
 
-namespace ProductCatalogAPI.Products.DeleteProduct;
+namespace ProductCatalogAPI.Features.Products.DeleteProduct;
 
 public class DeleteProductHandler(AppDbContext dbContext) : IRequestHandler<DeleteProductCommand, Product>
 {

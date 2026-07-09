@@ -1,4 +1,4 @@
-namespace ProductCatalogAPI.Products.CreateProduct;
+namespace ProductCatalogAPI.Features.Products.CreateProduct;
 
 public class ProductDto
 {

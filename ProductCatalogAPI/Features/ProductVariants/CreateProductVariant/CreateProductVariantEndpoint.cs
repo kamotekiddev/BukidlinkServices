@@ -1,7 +1,7 @@
 using Carter;
 using MediatR;
 
-namespace ProductCatalogAPI.ProductVariants.CreateProductVariant;
+namespace ProductCatalogAPI.Features.ProductVariants.CreateProductVariant;
 
 public class CreateProductVariantEndpoint : ICarterModule
 {

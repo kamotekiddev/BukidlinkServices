@@ -4,7 +4,7 @@ using ProductCatalogAPI.Common.Exceptions;
 using ProductCatalogAPI.Domain;
 using ProductCatalogAPI.Infrastructure;
 
-namespace ProductCatalogAPI.Products.CreateProduct;
+namespace ProductCatalogAPI.Features.Products.CreateProduct;
 
 public class CreateProductHandler(AppDbContext appDbContext) : IRequestHandler<CreateProductCommand, Product>
 {
