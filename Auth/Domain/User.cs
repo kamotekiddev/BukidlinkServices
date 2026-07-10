@@ -15,6 +15,7 @@ public class User
     public bool IsVerified => VerifiedAt is not null;
     public DateTime CreatedAt { get; init; }
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public ICollection<Role> Roles { get; set; } = [];
 
     public static User Create(string email, string firstName, string lastName, string hashedPassword)
     {
