@@ -35,7 +35,7 @@ public class TokenProvider(IConfiguration config) : ITokenProvider
             config["Jwt:Issuer"],
             config["Jwt:Audience"],
             claims,
-            expires: DateTime.UtcNow.AddMinutes(config.GetValue<int>("Jwt:ExpirationInMinutes")),
+            expires: DateTime.UtcNow.AddMinutes(config.GetValue<int>("Jwt:AccessTokenLifetimeMinutes")),
             signingCredentials: credentials
         );
 
@@ -51,7 +51,7 @@ public class TokenProvider(IConfiguration config) : ITokenProvider
         {
             UserId = user.Id,
             Token = token,
-            ExpiresAt = DateTime.UtcNow.AddDays(config.GetValue<int>("Jwt:RefreshTokenExpirationInDays"))
+            ExpiresAt = DateTime.UtcNow.AddDays(config.GetValue<int>("Jwt:RefreshTokenLifetimeDays"))
         };
         return refreshToken;
     }

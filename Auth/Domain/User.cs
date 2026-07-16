@@ -17,15 +17,19 @@ public class User
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public ICollection<Role> Roles { get; set; } = [];
 
-    public static User Create(string email, string firstName, string lastName, string hashedPassword)
+    public static User Create(string email, string firstName, string lastName)
     {
         return new User
         {
             Email = email,
             FirstName = firstName,
             LastName = lastName,
-            HashedPassword = hashedPassword
         };
+    }
+
+    public void SetPassword(string password)
+    {
+        HashedPassword = password;
     }
 
     public void VerifyUser()

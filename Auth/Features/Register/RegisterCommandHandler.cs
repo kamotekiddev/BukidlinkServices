@@ -2,13 +2,14 @@ using Auth.Domain;
 using Auth.Infrastructure;
 using Auth.Infrastructure.Auth;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Auth.Features.Register;
 
 public class RegisterCommandHandler(
     AppDbContext db,
-    IPasswordHasher passwordHasher,
+    IPasswordHasher<User> passwordHasher,
     ITokenProvider tokenProvider
 )
     : IRequestHandler<RegisterCommand, RegisterResult>
@@ -21,14 +22,16 @@ public class RegisterCommandHandler(
         if (existingUser != null)
             throw new Exception("User already exist.");
 
-        var hashedPassword = await passwordHasher.HashPassword(request.Password);
 
         var user = User.Create(
             request.Email,
             request.FirstName,
-            request.LastName,
-            hashedPassword
+            request.LastName
         );
+
+        var hashedPassword = passwordHasher.HashPassword(user, request.Password);
+
+        user.SetPassword(hashedPassword);
 
         db.Users.Add(user);
         await db.SaveChangesAsync(ct);
