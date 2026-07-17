@@ -1,9 +1,9 @@
 using System.Reflection;
+using BuildingBlocks.Extensions;
 using Carter;
 using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using ProductCatalogAPI.Common.Errors;
 using ProductCatalogAPI.Infrastructure;
 using Scalar.AspNetCore;
 

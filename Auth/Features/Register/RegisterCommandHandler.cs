@@ -1,6 +1,7 @@
 using Auth.Domain;
 using Auth.Infrastructure;
 using Auth.Infrastructure.Auth;
+using BuildingBlocks.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,7 @@ public class RegisterCommandHandler(
             .FirstOrDefaultAsync(user => user.Email == request.Email, ct);
 
         if (existingUser != null)
-            throw new Exception("User already exist.");
+            throw new BadRequestException("User already exist.");
 
 
         var user = User.Create(

@@ -2,7 +2,9 @@ using System.Reflection;
 using Auth.Domain;
 using Auth.Infrastructure;
 using Auth.Infrastructure.Auth;
+using BuildingBlocks.Extensions;
 using Carter;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -18,6 +20,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddCarter();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
+builder.Services.AddValidatorsFromAssemblies([typeof(Program).Assembly]);
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly())
 );
@@ -35,6 +38,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseGlobalExceptionHandler();
 app.MapCarter();
 app.UseHttpsRedirection();
 app.Run();

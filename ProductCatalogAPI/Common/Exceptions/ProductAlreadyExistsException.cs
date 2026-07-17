@@ -1,3 +1,5 @@
+using BuildingBlocks.Exceptions;
+
 namespace ProductCatalogAPI.Common.Exceptions;
 
 public class ProductAlreadyExistsException(string productName)
