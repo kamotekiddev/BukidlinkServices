@@ -29,19 +29,24 @@ public static class ExceptionHandlingExtensions
                     ValidationException validation =>
                         ProblemDetailsFactory.CreateValidationProblem(validation),
 
-                    DomainException domain =>
+                    DomainException ex =>
                         ProblemDetailsFactory.CreateProblem(
                             StatusCodes.Status400BadRequest,
-                            domain.Message),
+                            ex.Message),
 
-                    BadRequestException badRequestException =>
+                    BadRequestException ex =>
                         ProblemDetailsFactory.CreateProblem(
                             StatusCodes.Status400BadRequest,
-                            badRequestException.Message),
+                            ex.Message),
 
                     NotFoundException ex =>
                         ProblemDetailsFactory.CreateProblem(
                             StatusCodes.Status404NotFound,
+                            ex.Message),
+
+                    UnAuthorizedException ex =>
+                        ProblemDetailsFactory.CreateProblem(
+                            StatusCodes.Status401Unauthorized,
                             ex.Message),
 
                     _ =>

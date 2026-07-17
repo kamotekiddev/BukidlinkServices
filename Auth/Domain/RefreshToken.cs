@@ -2,10 +2,16 @@ namespace Auth.Domain;
 
 public class RefreshToken
 {
-    public Guid Id { get; set; }
-    public Guid UserId { get; set; }
-    public string Token { get; set; }
+    public Guid Id { get; init; }
+    public Guid UserId { get; init; }
+    public string Token { get; init; }
 
-    public DateTime ExpiresAt { get; set; }
-    public DateTime? RevokedAt { get; set; }
+    public DateTime ExpiresAt { get; init; }
+    public DateTime? RevokedAt { get; private set; }
+
+    public void Revoke()
+    {
+        if (RevokedAt is not null) return;
+        RevokedAt = DateTime.UtcNow;
+    }
 }
