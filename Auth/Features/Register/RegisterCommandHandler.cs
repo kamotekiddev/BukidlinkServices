@@ -17,29 +17,43 @@ public class RegisterCommandHandler(
 {
     public async Task<RegisterResult> Handle(RegisterCommand request, CancellationToken ct)
     {
-        var existingUser = await db.Users
-            .FirstOrDefaultAsync(user => user.Email == request.Email, ct);
+        await using var transaction = await db.Database.BeginTransactionAsync(ct);
 
-        if (existingUser != null)
-            throw new BadRequestException("User already exist.");
+        try
+        {
+            var existingUser = await db.Users
+                .FirstOrDefaultAsync(user => user.Email == request.Email, ct);
 
+            if (existingUser != null)
+                throw new BadRequestException("User already exist.");
 
-        var user = User.Create(
-            request.Email,
-            request.FirstName,
-            request.LastName
-        );
+            var user = User.Create(
+                request.Email,
+                request.FirstName,
+                request.LastName
+            );
 
-        var hashedPassword = passwordHasher.HashPassword(user, request.Password);
+            var hashedPassword = passwordHasher.HashPassword(user, request.Password);
 
-        user.SetPassword(hashedPassword);
+            user.SetPassword(hashedPassword);
 
-        db.Users.Add(user);
-        await db.SaveChangesAsync(ct);
+            db.Users.Add(user);
+            await db.SaveChangesAsync(ct);
 
-        var accessToken = tokenProvider.GenerateAccessToken(user);
-        var refreshToken = tokenProvider.GenerateRefreshToken(user);
+            var accessToken = tokenProvider.GenerateAccessToken(user);
+            var refreshToken = tokenProvider.GenerateRefreshToken(user);
 
-        return new RegisterResult(accessToken, refreshToken.Token);
+            db.RefreshTokens.Add(refreshToken);
+            await db.SaveChangesAsync(ct);
+
+            await transaction.CommitAsync(ct);
+
+            return new RegisterResult(accessToken, refreshToken.Token);
+        }
+        catch
+        {
+            await transaction.RollbackAsync(ct);
+            throw;
+        }
     }
 }
