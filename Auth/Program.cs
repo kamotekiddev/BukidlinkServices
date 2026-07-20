@@ -24,6 +24,8 @@ builder.Services.AddValidatorsFromAssemblies([typeof(Program).Assembly]);
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly())
 );
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 var app = builder.Build();
 
@@ -38,6 +40,8 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseGlobalExceptionHandler();
 app.MapCarter();
 app.UseHttpsRedirection();
