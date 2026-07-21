@@ -26,8 +26,4 @@
         <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Features\GetCurrentUser\"/>
-    </ItemGroup>
-
 </Project>
