@@ -1,17 +1,20 @@
 using System.Text.Json;
+using BuildingBlocks.Errors;
+using BuildingBlocks.Exceptions;
 using FluentValidation;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
-using ProductCatalogAPI.Common.Exceptions;
+using Microsoft.AspNetCore.Http;
 
-namespace ProductCatalogAPI.Common.Errors;
+namespace BuildingBlocks.Extensions;
 
 public static class ExceptionHandlingExtensions
 {
     public static void UseGlobalExceptionHandler(this IApplicationBuilder app)
     {
-        app.UseExceptionHandler(errorApp =>
+        app.UseExceptionHandler(builder =>
         {
-            errorApp.Run(async context =>
+            builder.Run(async context =>
             {
                 var feature = context.Features
                     .Get<IExceptionHandlerFeature>();
@@ -26,15 +29,25 @@ public static class ExceptionHandlingExtensions
                     ValidationException validation =>
                         ProblemDetailsFactory.CreateValidationProblem(validation),
 
-                    DomainException domain =>
+                    DomainException ex =>
                         ProblemDetailsFactory.CreateProblem(
                             StatusCodes.Status400BadRequest,
-                            domain.Message),
+                            ex.Message),
 
-                    KeyNotFoundException =>
+                    BadRequestException ex =>
+                        ProblemDetailsFactory.CreateProblem(
+                            StatusCodes.Status400BadRequest,
+                            ex.Message),
+
+                    NotFoundException ex =>
                         ProblemDetailsFactory.CreateProblem(
                             StatusCodes.Status404NotFound,
-                            "Resource not found"),
+                            ex.Message),
+
+                    UnAuthorizedException ex =>
+                        ProblemDetailsFactory.CreateProblem(
+                            StatusCodes.Status401Unauthorized,
+                            ex.Message),
 
                     _ =>
                         ProblemDetailsFactory.CreateProblem(
@@ -42,13 +55,12 @@ public static class ExceptionHandlingExtensions
                             "An unexpected error occurred.")
                 };
 
-                // context.Response.StatusCode = problem.Status ?? 500;
-                // await context.Response.WriteAsJsonAsync(problem);
                 context.Response.StatusCode = problem.Status ?? 500;
+
                 await context.Response.WriteAsJsonAsync(
                     problem,
                     problem.GetType(), // ensures ValidationProblemDetails serializes Errors
-                    new JsonSerializerOptions()
+                    new JsonSerializerOptions
                     {
                         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                     });

@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-using ProductCatalogAPI.Common.Errors;
+using ProductCatalogAPI.Common.Exceptions;
 
 namespace ProductCatalogAPI.Domain.ValueObjects;
 
@@ -9,9 +9,9 @@ public record Sku
     private const int MinLength = 5;
     private static readonly Regex AllowedPattern = new("^[A-Z0-9-]+$", RegexOptions.Compiled);
 
-    public string Value { get; init; }
-
     private Sku(string value) => Value = value;
+
+    public string Value { get; init; }
 
     public static Sku Create(string value)
     {

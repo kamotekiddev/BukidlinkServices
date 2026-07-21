@@ -1,7 +1,8 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ProductCatalogAPI.Common.Errors;
+namespace BuildingBlocks.Errors;
 
 public abstract class ProblemDetailsFactory
 {
@@ -11,7 +12,6 @@ public abstract class ProblemDetailsFactory
         {
             Status = status,
             Title = title,
-            Type = $"https://httpstatuses.com/{status}"
         };
     }
 
