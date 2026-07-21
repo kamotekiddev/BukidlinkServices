@@ -2,6 +2,7 @@ using System.Reflection;
 using Auth.Domain;
 using Auth.Infrastructure;
 using Auth.Infrastructure.Auth;
+using Auth.Infrastructure.Seeders;
 using BuildingBlocks.Auth;
 using BuildingBlocks.Extensions;
 using Carter;
@@ -30,6 +31,12 @@ builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await DatabaseSeeder.SeedAsync(db);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
