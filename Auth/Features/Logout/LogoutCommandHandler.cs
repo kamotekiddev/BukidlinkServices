@@ -14,15 +14,17 @@ public class LogoutCommandHandler(
 {
     public async Task<LogoutResult> Handle(LogoutCommand request, CancellationToken ct)
     {
+        var userId = currentUser.UserId ?? throw new UnAuthorizedException("User is not authenticated.");
+
         var refreshToken =
             await db.RefreshTokens.FirstOrDefaultAsync(
                 rt => rt.Token == request.RefreshToken &&
-                      rt.UserId == currentUser.UserId &&
+                      rt.UserId == userId &&
                       rt.RevokedAt == null,
                 ct
             ) ?? throw new UnAuthorizedException("Invalid refresh token.");
 
-        if (currentUser.UserId != refreshToken.UserId || refreshToken.ExpiresAt <= DateTime.UtcNow)
+        if (refreshToken.ExpiresAt <= DateTime.UtcNow)
             throw new UnAuthorizedException("Invalid refresh token.");
 
         refreshToken.Revoke();
