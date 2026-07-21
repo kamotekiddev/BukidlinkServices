@@ -2,6 +2,7 @@ using System.Reflection;
 using Auth.Domain;
 using Auth.Infrastructure;
 using Auth.Infrastructure.Auth;
+using BuildingBlocks.Auth;
 using BuildingBlocks.Extensions;
 using Carter;
 using FluentValidation;
@@ -25,6 +26,7 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly())
 );
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
 var app = builder.Build();
