@@ -21,6 +21,9 @@ public class RegisterCommandHandler(
 
         try
         {
+            var role = await db.Roles.FirstOrDefaultAsync(role => role.Name == request.Role, ct) ??
+                       throw new BadRequestException("The give role is invalid.");
+
             var existingUser = await db.Users
                 .FirstOrDefaultAsync(user => user.Email == request.Email, ct);
 
@@ -32,6 +35,8 @@ public class RegisterCommandHandler(
                 request.FirstName,
                 request.LastName
             );
+
+            user.AssignRole(role);
 
             var hashedPassword = passwordHasher.HashPassword(user, request.Password);
 

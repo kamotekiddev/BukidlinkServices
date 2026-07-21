@@ -39,4 +39,14 @@ public class User
 
         VerifiedAt = DateTime.UtcNow;
     }
+
+    public void AssignRole(Role role)
+    {
+        var roleExist = Roles.Any(r => r.Name == role.Name);
+
+        if (roleExist)
+            return;
+
+        Roles.Add(role);
+    }
 }

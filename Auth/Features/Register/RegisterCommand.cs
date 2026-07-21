@@ -7,6 +7,7 @@ public record RegisterCommand(
     string FirstName,
     string LastName,
     string Password,
-    string ConfirmPassword
+    string ConfirmPassword,
+    string Role
 )
     : IRequest<RegisterResult>;

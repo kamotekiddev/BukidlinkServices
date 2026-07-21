@@ -1,3 +1,4 @@
+using Auth.Constants;
 using FluentValidation;
 
 namespace Auth.Features.Register;
@@ -34,5 +35,11 @@ public class RegisterValidator : AbstractValidator<RegisterCommand>
         RuleFor(x => x.ConfirmPassword)
             .Equal(x => x.Password)
             .WithMessage("Passwords do not match.");
+
+        RuleFor(x => x.Role)
+            .NotEmpty()
+            .WithMessage("Role is required.")
+            .Must(role => role == Roles.Customer || role == Roles.Farmer)
+            .WithMessage($"Role must be either {Roles.Customer} or {Roles.Farmer}.");
     }
 }
