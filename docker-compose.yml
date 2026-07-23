@@ -64,6 +64,23 @@ services:
       - "5435:5432"
     volumes:
       - order_db_data:/var/lib/postgresql/data
+
+  # =========================
+  # STORE SERVICE DB
+  # =========================
+  store-db:
+    image: postgres:16
+    container_name: store_service_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: store_db
+    ports:
+      - "5436:5432"
+    volumes:
+      - store_db_data:/var/lib/postgresql/data
+
   # =========================
   # RABBITMQ 4 + MANAGEMENT
   # =========================
@@ -88,4 +105,5 @@ volumes:
   inventory_db_data:
   order_db_data:
   auth_db_data:
+  store_db_data:
   rabbitmq_data:
