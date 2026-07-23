@@ -1,3 +1,4 @@
+using BuildingBlocks.Constants;
 using Carter;
 using MediatR;
 
@@ -8,14 +9,15 @@ public sealed class CreateStoreEndpoint : ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapPost("/stores/create", async (CreateStoreCommand request, ISender sender) =>
-        {
-            var result = await sender.Send(request);
-            return Results.Created($"/stores/${result.StoreId}",
-                new
-                {
-                    Message = "Successfully created a store.",
-                    StoreId = result.StoreId
-                });
-        });
+            {
+                var result = await sender.Send(request);
+                return Results.Created($"/stores/{result.StoreId}",
+                    new
+                    {
+                        Message = "Successfully created a store.",
+                        StoreId = result.StoreId
+                    });
+            })
+            .RequireAuthorization(policy => policy.RequireRole(Roles.Farmer));
     }
 }

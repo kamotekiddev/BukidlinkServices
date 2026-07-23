@@ -2,6 +2,7 @@ using System.Reflection;
 using BuildingBlocks.Auth;
 using BuildingBlocks.Extensions;
 using Carter;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using StoreAPI.Infrastructure;
@@ -9,6 +10,7 @@ using StoreAPI.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
+builder.Services.AddValidatorsFromAssemblies([typeof(Program).Assembly]);
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("StoreDB");
@@ -39,9 +41,13 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseHttpsRedirection();
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseGlobalExceptionHandler();
+
 app.MapCarter();
-app.UseHttpsRedirection();
+
 app.Run();
