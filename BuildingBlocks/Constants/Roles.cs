@@ -1,4 +1,4 @@
-namespace Auth.Constants;
+namespace BuildingBlocks.Constants;
 
 public abstract class Roles
 {

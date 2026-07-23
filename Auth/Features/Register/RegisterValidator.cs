@@ -1,4 +1,4 @@
-using Auth.Constants;
+using BuildingBlocks.Constants;
 using FluentValidation;
 
 namespace Auth.Features.Register;
