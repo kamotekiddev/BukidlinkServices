@@ -1,4 +1,5 @@
 using System.Text;
+using BuildingBlocks.Constants;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -50,15 +51,21 @@ public static class AuthenticationExtension
 
                     await context.Response.WriteAsJsonAsync(new
                     {
-                        Status = StatusCodes.Status401Unauthorized,
-                        Messaage =
+                        Status = StatusCodes.Status403Forbidden,
+                        Message =
                             "You do not have permission to access this resource."
                     });
                 }
             };
         });
 
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy(Policy.Farmer, configurePolicy => { configurePolicy.RequireRole(Roles.Farmer); });
+            options.AddPolicy(Policy.Customer, configurePolicy => { configurePolicy.RequireRole(Roles.Customer); });
+            options.AddPolicy(Policy.Admin, configurePolicy => { configurePolicy.RequireRole(Roles.Admin); });
+        });
+
 
         return services;
     }

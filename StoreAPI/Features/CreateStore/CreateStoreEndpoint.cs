@@ -18,6 +18,6 @@ public sealed class CreateStoreEndpoint : ICarterModule
                         StoreId = result.StoreId
                     });
             })
-            .RequireAuthorization(policy => policy.RequireRole(Roles.Farmer));
+            .RequireAuthorization(Policy.Farmer);
     }
 }
