@@ -9,6 +9,8 @@ public class RefreshToken
     public DateTime ExpiresAt { get; init; }
     public DateTime? RevokedAt { get; private set; }
 
+    public User User { get; set; }
+
     public void Revoke()
     {
         if (RevokedAt is not null) return;
