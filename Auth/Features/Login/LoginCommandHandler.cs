@@ -17,7 +17,8 @@ public class LoginCommandHandler(
 {
     public async Task<LoginResult> Handle(LoginCommand request, CancellationToken ct)
     {
-        var user = await db.Users.FirstOrDefaultAsync(user => user.Email == request.Email, ct) ??
+        var user = await db.Users.Include(user => user.Roles)
+                       .FirstOrDefaultAsync(user => user.Email == request.Email, ct) ??
                    throw new BadRequestException("Invalid email or password");
 
         var passwordVerificationResult =
