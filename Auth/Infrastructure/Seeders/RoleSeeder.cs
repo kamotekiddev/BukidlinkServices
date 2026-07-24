@@ -1,5 +1,5 @@
-using Auth.Constants;
 using Auth.Domain;
+using BuildingBlocks.Constants;
 using Microsoft.EntityFrameworkCore;
 
 namespace Auth.Infrastructure.Seeders;
