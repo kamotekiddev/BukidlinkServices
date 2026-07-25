@@ -15,7 +15,7 @@ public sealed class RefreshTokenCommandHandler(
     public async Task<RefreshTokenResult> Handle(RefreshTokenCommand request, CancellationToken ct)
     {
         var existingRefreshToken =
-            await db.RefreshTokens.Include(rt => rt.User)
+            await db.RefreshTokens.Include(rt => rt.User).ThenInclude(user => user.Roles)
                 .SingleOrDefaultAsync(rt => rt.Token == request.RefreshToken, ct) ??
             throw new BadRequestException("Invalid refresh token.");
 
@@ -28,6 +28,7 @@ public sealed class RefreshTokenCommandHandler(
         existingRefreshToken.Revoke();
 
         var user = existingRefreshToken.User;
+
         var newRefreshToken = tokenProvider.GenerateRefreshToken(user);
         var accessToken = tokenProvider.GenerateAccessToken(user);
 
