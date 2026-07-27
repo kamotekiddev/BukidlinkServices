@@ -4,7 +4,6 @@ using Carter;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using OrderAPI.Infrastructure;
-using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,11 +46,6 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference(options =>
-    {
-        options.Title = "Order API";
-        options.Theme = ScalarTheme.Mars;
-    });
 }
 
 app.UseHttpsRedirection();

@@ -4,7 +4,6 @@ using BuildingBlocks.Extensions;
 using Carter;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Scalar.AspNetCore;
 using StoreAPI.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,11 +33,6 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference(options =>
-    {
-        options.Title = "Store API";
-        options.Theme = ScalarTheme.Kepler;
-    });
 }
 
 app.UseHttpsRedirection();

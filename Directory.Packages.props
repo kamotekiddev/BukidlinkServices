@@ -13,6 +13,5 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.13"/>
     <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.13"/>
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4"/>
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.12.40"/>
   </ItemGroup>
 </Project>

@@ -1,11 +1,11 @@
 using System.Reflection;
+using BuildingBlocks.Auth;
 using BuildingBlocks.Extensions;
 using Carter;
 using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using ProductCatalogAPI.Infrastructure;
-using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,8 +36,9 @@ builder.Services.AddMassTransit(busConfigurator =>
 });
 
 builder.Services.AddCarter();
-
 builder.Services.ConfigureHttpJsonOptions(options => { options.SerializerOptions.PropertyNamingPolicy = null; });
+
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 var app = builder.Build();
 app.UseGlobalExceptionHandler();
@@ -47,13 +48,10 @@ app.UseGlobalExceptionHandler();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference(options =>
-    {
-        options.Title = "Product Catalog API";
-        options.Theme = ScalarTheme.Mars;
-    });
 }
 
 app.MapCarter();
+app.UseAuthentication();
+app.UseAuthentication();
 app.UseHttpsRedirection();
 app.Run();

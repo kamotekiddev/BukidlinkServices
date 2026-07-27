@@ -4,7 +4,6 @@ using Carter;
 using InventoryAPI.Infrastructure;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,11 +45,6 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference(options =>
-    {
-        options.Title = "Inventory API";
-        options.Theme = ScalarTheme.Mars;
-    });
 }
 
 app.MapCarter();
