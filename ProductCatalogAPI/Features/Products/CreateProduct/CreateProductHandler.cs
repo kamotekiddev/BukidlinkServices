@@ -6,19 +6,29 @@ using ProductCatalogAPI.Infrastructure;
 
 namespace ProductCatalogAPI.Features.Products.CreateProduct;
 
-public class CreateProductHandler(AppDbContext appDbContext) : IRequestHandler<CreateProductCommand, Product>
+public class CreateProductHandler(AppDbContext db) : IRequestHandler<CreateProductCommand, Product>
 {
-    public async Task<Product> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+    public async Task<Product> Handle(CreateProductCommand request, CancellationToken ct)
     {
-        var productExist =
-            await appDbContext.Products.FirstOrDefaultAsync(p => p.Name == request.Name,
-                cancellationToken: cancellationToken);
+        var existingProduct =
+            await db.Products.FirstOrDefaultAsync(
+                product =>
+                    product.Name == request.Name &&
+                    product.StoreId == request.StoreId, ct
+            );
 
-        if (productExist != null) throw new ProductAlreadyExistsException(request.Name);
 
-        var product = new Product(request.Name, request.Description);
-        appDbContext.Products.Add(product);
-        await appDbContext.SaveChangesAsync(cancellationToken);
+        if (existingProduct is not null)
+            throw new ProductAlreadyExistsException(request.Name);
+
+        var product = Product.Create(
+            request.Name,
+            request.Description,
+            request.StoreId
+        );
+
+        db.Products.Add(product);
+        await db.SaveChangesAsync(ct);
 
         return product;
     }

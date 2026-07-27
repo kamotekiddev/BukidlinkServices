@@ -1,14 +1,25 @@
+using BuildingBlocks.Entities;
 using ProductCatalogAPI.Domain.ValueObjects;
 
 namespace ProductCatalogAPI.Domain;
 
-public class ProductVariant
+public class ProductVariant : Entity
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-    public Sku Sku { get; set; }
-    public Money Price { get; set; }
+    public string Name { get; private set; }
+    public Sku Sku { get; private set; }
+    public Money Price { get; private set; }
 
-    public Guid ProductId { get; set; }
-    public Product Product { get; set; }
+    public Guid ProductId { get; init; }
+    public Product Product { get; init; }
+
+    public static ProductVariant Create(string name, Sku sku, Money price, Guid productId)
+    {
+        return new ProductVariant
+        {
+            Name = name,
+            Sku = sku,
+            Price = price,
+            ProductId = productId
+        };
+    }
 }

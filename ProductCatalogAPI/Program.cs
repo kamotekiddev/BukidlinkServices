@@ -37,6 +37,8 @@ builder.Services.AddMassTransit(busConfigurator =>
 
 builder.Services.AddCarter();
 
+builder.Services.ConfigureHttpJsonOptions(options => { options.SerializerOptions.PropertyNamingPolicy = null; });
+
 var app = builder.Build();
 app.UseGlobalExceptionHandler();
 

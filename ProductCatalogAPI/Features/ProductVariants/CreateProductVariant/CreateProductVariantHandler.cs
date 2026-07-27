@@ -22,13 +22,12 @@ public class CreateProductVariantHandler(AppDbContext dbContext, IPublishEndpoin
             throw new ProductVariantAlreadyExistException(
                 $"Product variant with the given name: {request.Name} and productId: {request.ProductId} already exists in the system.");
 
-        variant = new ProductVariant
-        {
-            Name = request.Name,
-            Price = new Money(request.Price, "PHP"),
-            ProductId = request.ProductId,
-            Sku = Sku.Create(request.SkuValue)
-        };
+        variant = ProductVariant.Create(
+            request.Name,
+            Sku.Create(request.SkuValue),
+            new Money(request.Price),
+            request.ProductId
+        );
 
         dbContext.ProductVariants.Add(variant);
         await dbContext.SaveChangesAsync(cancellationToken);
