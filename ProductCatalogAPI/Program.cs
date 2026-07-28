@@ -6,6 +6,7 @@ using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using ProductCatalogAPI.Infrastructure;
+using ProductCatalogAPI.Infrastructure.HttpClients.StoreHttpClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,13 +36,20 @@ builder.Services.AddMassTransit(busConfigurator =>
     });
 });
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddCarter();
+
 builder.Services.ConfigureHttpJsonOptions(options => { options.SerializerOptions.PropertyNamingPolicy = null; });
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
+builder.Services.AddHttpClient<StoreClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:Store:Url"]!);
+});
+
 var app = builder.Build();
-app.UseGlobalExceptionHandler();
 
 
 // Configure the HTTP request pipeline.
@@ -50,8 +58,13 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.MapCarter();
-app.UseAuthentication();
-app.UseAuthentication();
+app.UseGlobalExceptionHandler();
+
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapCarter();
+
 app.Run();
