@@ -3,4 +3,7 @@ using OrderAPI.Models;
 
 namespace OrderAPI.Features.Orders.CreateOrder;
 
-public record CreateOrderCommand(List<OrderItemDto> OrderItems) : IRequest<Order>;
+public record CreateOrderCommand(
+    Guid StoreId,
+    List<OrderItemDto> OrderItems
+) : IRequest<Order>;

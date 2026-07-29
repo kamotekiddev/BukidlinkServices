@@ -6,7 +6,11 @@ using OrderAPI.Models;
 
 namespace OrderAPI.Features.Orders.CreateOrder;
 
-public class CreateOrderCommandHandler(AppDbContext db, ISendEndpoint sender)
+public class CreateOrderCommandHandler(
+    AppDbContext db,
+    IPublishEndpoint sender,
+    ILogger<CreateOrderCommandHandler> logger
+)
     : IRequestHandler<CreateOrderCommand, Order>
 {
     public async Task<Order> Handle(CreateOrderCommand request, CancellationToken ct)
@@ -21,12 +25,23 @@ public class CreateOrderCommandHandler(AppDbContext db, ISendEndpoint sender)
             .ToList();
 
         // TODO: user id will come from user session
-        var order = Order.Create(Guid.NewGuid(), orderItems);
+        var order = Order.Create(
+            Guid.NewGuid(),
+            request.StoreId,
+            orderItems
+        );
 
         db.Orders.Add(order);
         await db.SaveChangesAsync(ct);
 
-        await sender.Send(new OrderPlacedEvent(order.Id, Guid.Empty, order.Status.ToString()), ct);
+        await sender.Publish(
+            new OrderPlacedEvent(order.Id,
+                Guid.Empty,
+                order.Status.ToString()
+            ),
+            ct
+        );
+
         return order;
     }
 }

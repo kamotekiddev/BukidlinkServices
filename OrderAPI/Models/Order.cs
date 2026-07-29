@@ -9,20 +9,22 @@ public enum OrderStatus
 
 public class Order
 {
+    private Order()
+    {
+    }
+
     public Guid Id { get; init; }
     public Guid UserId { get; init; }
     public OrderStatus Status { get; private set; }
     public List<OrderItem> OrderItems { get; private set; } = new();
 
-    public decimal TotalPrice => OrderItems.Sum(item => item.Quantity * item.SellPrice);
-    
+    public Guid StoreId { get; init; }
+
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 
-    private Order()
-    {
-    }
+    public decimal TotalPrice => OrderItems.Sum(item => item.Quantity * item.SellPrice);
 
-    public static Order Create(Guid userId, List<OrderItem> orderItems)
+    public static Order Create(Guid userId, Guid storeId, List<OrderItem> orderItems)
     {
         if (userId == Guid.Empty) throw new Exception("User Id cannot be empty.");
         if (orderItems.Count == 0) throw new Exception("Order must have at least one item.");
@@ -30,6 +32,7 @@ public class Order
         return new Order
         {
             UserId = userId,
+            StoreId = storeId,
             OrderItems = orderItems,
             Status = OrderStatus.Placed
         };

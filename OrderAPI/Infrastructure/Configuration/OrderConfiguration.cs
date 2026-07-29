@@ -22,6 +22,11 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .IsRequired()
             .HasMaxLength(255);
 
+        builder.Property(order => order.StoreId)
+            .IsRequired();
+
+        builder.HasIndex(order => order.StoreId);
+
         builder.HasMany(order => order.OrderItems)
             .WithOne()
             .HasForeignKey(orderItem => orderItem.OrderId)
