@@ -1,5 +1,7 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
+using BuildingBlocks.Auth;
+using BuildingBlocks.Extensions;
 using Carter;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +36,9 @@ builder.Services.AddMassTransit(busConfigurator =>
 });
 
 builder.Services.AddCarter();
+builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -48,6 +53,12 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseGlobalExceptionHandler();
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapCarter();
+
 app.Run();

@@ -1,5 +1,5 @@
-using BuildingBlocks.Contracts;
-using MassTransit;
+using BuildingBlocks.Auth;
+using BuildingBlocks.Exceptions;
 using MediatR;
 using OrderAPI.Infrastructure;
 using OrderAPI.Models;
@@ -8,13 +8,17 @@ namespace OrderAPI.Features.Orders.CreateOrder;
 
 public class CreateOrderCommandHandler(
     AppDbContext db,
-    IPublishEndpoint sender,
-    ILogger<CreateOrderCommandHandler> logger
+    ILogger<CreateOrderCommandHandler> logger,
+    ICurrentUser currentUser
 )
     : IRequestHandler<CreateOrderCommand, Order>
 {
     public async Task<Order> Handle(CreateOrderCommand request, CancellationToken ct)
     {
+        // check product variants, get info, active, price, storeid
+
+        var userId = currentUser.UserId ?? throw new BadRequestException("Unauthenticated.");
+
         var orderItems = request.OrderItems.Select(orderItem =>
                 new OrderItem
                 {
@@ -24,9 +28,15 @@ public class CreateOrderCommandHandler(
                 })
             .ToList();
 
-        // TODO: user id will come from user session
+        logger.LogInformation(
+            "Creating order. UserId:'{UserId}', StoreId: '{StoreId}', ItemCount:'{ItemCount}'",
+            userId,
+            request.StoreId,
+            orderItems.Count
+        );
+
         var order = Order.Create(
-            Guid.NewGuid(),
+            userId,
             request.StoreId,
             orderItems
         );
@@ -34,12 +44,11 @@ public class CreateOrderCommandHandler(
         db.Orders.Add(order);
         await db.SaveChangesAsync(ct);
 
-        await sender.Publish(
-            new OrderPlacedEvent(order.Id,
-                Guid.Empty,
-                order.Status.ToString()
-            ),
-            ct
+        logger.LogInformation(
+            "Order created successfully. OrderId: '{OrderId}', UserId:'{UserId}', StoreId:'{StoreId}'",
+            order.Id,
+            userId,
+            request.StoreId
         );
 
         return order;

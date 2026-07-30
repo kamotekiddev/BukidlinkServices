@@ -5,8 +5,14 @@ using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.Extensions;
+
+public class GlobalExceptionHandler
+{
+};
 
 public static class ExceptionHandlingExtensions
 {
@@ -16,6 +22,9 @@ public static class ExceptionHandlingExtensions
         {
             builder.Run(async context =>
             {
+                var logger = context.RequestServices
+                    .GetRequiredService<ILogger<GlobalExceptionHandler>>();
+
                 var feature = context.Features
                     .Get<IExceptionHandlerFeature>();
 
@@ -23,6 +32,13 @@ public static class ExceptionHandlingExtensions
 
                 if (exception is null)
                     return;
+
+                logger.LogError(
+                    exception,
+                    "Unhandled exception occurred. Path: {Path}",
+                    context.Request.Path
+                );
+
 
                 var problem = exception switch
                 {
