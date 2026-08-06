@@ -6,6 +6,7 @@ using Carter;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using OrderAPI.Infrastructure;
+using OrderAPI.Infrastructure.HttpClients.ProductServiceClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,10 @@ builder.Services.AddCarter();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+builder.Services.AddHttpClient<IProductServiceClient, ProductServiceClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:Product:Url"]!);
+});
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
