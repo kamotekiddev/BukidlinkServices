@@ -21,9 +21,7 @@ public class CreateOrderCommandHandler(
     public async Task<Order> Handle(CreateOrderCommand request, CancellationToken ct)
     {
         var userId = currentUser.UserId ?? throw new BadRequestException("Unauthenticated.");
-
         var variantIds = request.OrderItems.Select(item => item.ProductVariantId).ToArray();
-        // check product variants, get info, active, price, storeid
 
         logger.LogInformation(
             "Creating order for StoreId:{StoreId}, ProductVariantIds:{VariantIds}",
@@ -38,7 +36,6 @@ public class CreateOrderCommandHandler(
 
         await storeTask;
         var productVariants = await variantsTask;
-
 
         if (variantIds.Length != productVariants.Count)
         {
@@ -74,6 +71,7 @@ public class CreateOrderCommandHandler(
         var order = Order.Create(
             userId,
             request.StoreId,
+            request.PaymentMethod,
             orderItems
         );
 
@@ -87,6 +85,8 @@ public class CreateOrderCommandHandler(
             request.StoreId,
             string.Join(",", variantIds)
         );
+
+        // TODO: reserve the stock after order is created
 
         return order;
     }

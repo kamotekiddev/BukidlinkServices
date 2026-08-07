@@ -18,6 +18,12 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 
         builder.HasIndex(order => order.UserId);
 
+        builder.Property(order => order.PaymentMethod)
+            .IsRequired();
+
+        builder.Property(order => order.PaymentStatus)
+            .IsRequired();
+
         builder.Property(order => order.Status)
             .IsRequired()
             .HasMaxLength(255);
@@ -33,6 +39,9 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(order => order.CreatedAt)
+            .HasDefaultValueSql("NOW()");
+
+        builder.Property(order => order.UpdatedAt)
             .HasDefaultValueSql("NOW()");
     }
 }
