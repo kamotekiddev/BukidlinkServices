@@ -1,6 +1,7 @@
 ﻿using InventoryAPI.Events;
 using InventoryAPI.Infrastructure;
 using InventoryAPI.Models;
+using InventoryAPI.Models.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

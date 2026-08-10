@@ -2,6 +2,7 @@ using System.Text.Json;
 using InventoryAPI.Events;
 using InventoryAPI.Infrastructure;
 using InventoryAPI.Models;
+using InventoryAPI.Models.Enums;
 using MediatR;
 
 namespace InventoryAPI.Features.AuditLogs.Events;

@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
+using BuildingBlocks.Extensions;
 using Carter;
 using InventoryAPI.Infrastructure;
 using MassTransit;
@@ -47,6 +48,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseGlobalExceptionHandler();
 app.MapCarter();
 app.UseHttpsRedirection();
 app.Run();

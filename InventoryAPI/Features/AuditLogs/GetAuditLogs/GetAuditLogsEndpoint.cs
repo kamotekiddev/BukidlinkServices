@@ -1,5 +1,5 @@
 using Carter;
-using InventoryAPI.Models;
+using InventoryAPI.Models.Enums;
 using MediatR;
 
 namespace InventoryAPI.Features.AuditLogs.GetAuditLogs;

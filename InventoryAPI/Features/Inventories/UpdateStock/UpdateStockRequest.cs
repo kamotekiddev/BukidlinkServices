@@ -1,4 +1,4 @@
-using InventoryAPI.Models;
+using InventoryAPI.Models.Enums;
 
 namespace InventoryAPI.Features.Inventories.UpdateStock;
 
