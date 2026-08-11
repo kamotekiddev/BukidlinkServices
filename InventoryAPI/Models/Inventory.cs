@@ -1,5 +1,5 @@
 using BuildingBlocks.Entities;
-using BuildingBlocks.Exceptions;
+using InventoryAPI.Models.Exceptions;
 
 namespace InventoryAPI.Models;
 
@@ -21,14 +21,14 @@ public class Inventory : Entity
     public void DecreaseQuantity(int count)
     {
         if (count > AvailableQuantity)
-            throw new Exception("Not enough stock.");
+            throw new InsufficientStockException();
         Quantity -= count;
     }
 
     public void Reserve(int count, Guid orderId)
     {
         if (count > AvailableQuantity)
-            throw new BadRequestException("Not enough stock.");
+            throw new InsufficientStockException();
 
         ReservedQuantity += count;
 

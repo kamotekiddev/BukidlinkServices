@@ -1,6 +1,5 @@
 using BuildingBlocks.Exceptions;
 using InventoryAPI.Infrastructure;
-using InventoryAPI.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,9 +8,9 @@ namespace InventoryAPI.Features.Inventories.ReserveStocks;
 public class ReserveStocksCommandHandler(
     AppDbContext db,
     ILogger<ReserveStocksCommandHandler> logger)
-    : IRequestHandler<ReserveStocksCommand, ICollection<Inventory>>
+    : IRequestHandler<ReserveStocksCommand>
 {
-    public async Task<ICollection<Inventory>> Handle(ReserveStocksCommand request, CancellationToken ct)
+    public async Task Handle(ReserveStocksCommand request, CancellationToken ct)
     {
         await using var transaction = await db.Database.BeginTransactionAsync(ct);
 
@@ -69,7 +68,5 @@ public class ReserveStocksCommandHandler(
             request.OrderId,
             request.ReserveRequests
         );
-
-        return inventories;
     }
 }

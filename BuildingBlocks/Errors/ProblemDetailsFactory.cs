@@ -6,13 +6,21 @@ namespace BuildingBlocks.Errors;
 
 public abstract class ProblemDetailsFactory
 {
-    public static ProblemDetails CreateProblem(int status, string title)
+    public static ProblemDetails CreateProblem(int status, string detail, string? title = null, string? code = null)
     {
-        return new ProblemDetails
+        var problem = new ProblemDetails
         {
             Status = status,
-            Title = title,
+            Detail = detail
         };
+
+        if (!string.IsNullOrWhiteSpace(title))
+            problem.Title = title;
+
+        if (!string.IsNullOrWhiteSpace(code))
+            problem.Extensions["Code"] = code;
+
+        return problem;
     }
 
     public static ValidationProblemDetails CreateValidationProblem(

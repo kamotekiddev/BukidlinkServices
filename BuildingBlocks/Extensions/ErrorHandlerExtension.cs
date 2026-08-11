@@ -47,28 +47,38 @@ public static class ExceptionHandlingExtensions
 
                     DomainException ex =>
                         ProblemDetailsFactory.CreateProblem(
-                            StatusCodes.Status400BadRequest,
-                            ex.Message),
+                            ex.StatusCode,
+                            ex.Detail,
+                            ex.Title,
+                            ex.Code
+                        ),
 
                     BadRequestException ex =>
                         ProblemDetailsFactory.CreateProblem(
                             StatusCodes.Status400BadRequest,
-                            ex.Message),
+                            ex.Message
+                        ),
 
                     NotFoundException ex =>
                         ProblemDetailsFactory.CreateProblem(
                             StatusCodes.Status404NotFound,
-                            ex.Message),
+                            "Not found",
+                            ex.Message
+                        ),
 
                     UnAuthorizedException ex =>
                         ProblemDetailsFactory.CreateProblem(
                             StatusCodes.Status401Unauthorized,
-                            ex.Message),
+                            "Unauthorized",
+                            ex.Message
+                        ),
 
                     _ =>
                         ProblemDetailsFactory.CreateProblem(
                             StatusCodes.Status500InternalServerError,
-                            "An unexpected error occurred.")
+                            "Unexpected Error",
+                            "An unexpected error occurred."
+                        )
                 };
 
                 context.Response.StatusCode = problem.Status ?? 500;

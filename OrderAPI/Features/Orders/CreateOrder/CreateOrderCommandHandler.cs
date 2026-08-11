@@ -78,6 +78,9 @@ public class CreateOrderCommandHandler(
         db.Orders.Add(order);
         await db.SaveChangesAsync(ct);
 
+        // TODO: reserve the stock after order is created
+        order.Place();
+
         logger.LogInformation(
             "Order created successfully. OrderId: {OrderId}, UserId: {UserId}, StoreId: {StoreId}, VariantIds: {VariantIds}",
             order.Id,
@@ -86,7 +89,6 @@ public class CreateOrderCommandHandler(
             string.Join(",", variantIds)
         );
 
-        // TODO: reserve the stock after order is created
 
         return order;
     }

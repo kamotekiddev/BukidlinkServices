@@ -10,8 +10,8 @@ public class ReserveStocksEndpoint : ICarterModule
         app.MapPost("/inventories/reserve-stocks",
             async (ReserveStocksCommand request, IMediator sender) =>
             {
-                var result = await sender.Send(request);
-                return Results.Ok(result);
+                await sender.Send(request);
+                return Results.Ok(new { Success = true, Message = "Reservations successful." });
             });
     }
 }
