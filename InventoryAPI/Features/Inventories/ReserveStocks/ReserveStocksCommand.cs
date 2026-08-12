@@ -2,9 +2,9 @@ using MediatR;
 
 namespace InventoryAPI.Features.Inventories.ReserveStocks;
 
-public record ReserveRequest(Guid ProductVariantId, int Quantity);
+public record ReservationItem(Guid ProductVariantId, int Quantity);
 
 public record ReserveStocksCommand(
     Guid OrderId,
-    IEnumerable<ReserveRequest> ReserveRequests
+    ICollection<ReservationItem> Items
 ) : IRequest;

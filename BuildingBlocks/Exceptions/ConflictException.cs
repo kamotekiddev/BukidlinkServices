@@ -1,6 +1,16 @@
+using Microsoft.AspNetCore.Http;
+
 namespace BuildingBlocks.Exceptions;
 
-public class ConflictException(string message, string? code = null) : Exception(message)
+public class ConflictException : ApplicationException
 {
-    public string? Code { get; set; } = code;
+    public ConflictException(int statusCode, string detail, string? title = null, string? code = null) :
+        base(statusCode, detail, title, code)
+    {
+    }
+
+    public ConflictException(string detail, string? code = null) :
+        base(StatusCodes.Status204NoContent, detail, null, code)
+    {
+    }
 }

@@ -3,9 +3,12 @@ using BuildingBlocks.Contracts.Product;
 using BuildingBlocks.Exceptions;
 using MediatR;
 using OrderAPI.Infrastructure;
+using OrderAPI.Infrastructure.HttpClients.InventoryServiceClient;
+using OrderAPI.Infrastructure.HttpClients.InventoryServiceClient.Models;
 using OrderAPI.Infrastructure.HttpClients.ProductServiceClient;
 using OrderAPI.Infrastructure.HttpClients.StoreServiceClient;
 using OrderAPI.Models;
+using OrderAPI.Models.Enums;
 
 namespace OrderAPI.Features.Orders.CreateOrder;
 
@@ -14,7 +17,8 @@ public class CreateOrderCommandHandler(
     ILogger<CreateOrderCommandHandler> logger,
     ICurrentUser currentUser,
     IProductServiceClient productServiceClient,
-    IStoreServiceClient storeServiceClient
+    IStoreServiceClient storeServiceClient,
+    IInventoryServiceClient inventoryServiceClient
 )
     : IRequestHandler<CreateOrderCommand, Order>
 {
@@ -29,13 +33,25 @@ public class CreateOrderCommandHandler(
             string.Join(",", variantIds)
         );
 
+        var duplicateVariantIds = GetDuplicateVariantIds(variantIds);
+        if (duplicateVariantIds.Count != 0)
+        {
+            logger.LogWarning(
+                "Encountered duplicate variants during order validation. Duplicates:{Duplicates}",
+                string.Join(",", duplicateVariantIds)
+            );
+
+            throw new BadRequestException(
+                $"Encountered duplicate variant ids during the order validation. Duplicates:{string.Join(",", duplicateVariantIds)}"
+            );
+        }
+
         var storeTask = storeServiceClient.GetStoreByIdAsync(request.StoreId, ct);
         var variantsTask = productServiceClient.GetProductVariantsByIds(variantIds, ct);
 
         await Task.WhenAll(storeTask, variantsTask);
 
-        await storeTask;
-        var productVariants = await variantsTask;
+        var productVariants = variantsTask.Result;
 
         if (variantIds.Length != productVariants.Count)
         {
@@ -52,9 +68,9 @@ public class CreateOrderCommandHandler(
 
         var mismatchedVariantIds = GetMismatchedVariantIds(request.StoreId, productVariants);
 
-        if (mismatchedVariantIds.Any())
+        if (mismatchedVariantIds.Count > 0)
         {
-            logger.LogError(
+            logger.LogWarning(
                 "Variant Ids provided :{MismatchedVariantIds} does not belong to store: {StoreId}.",
                 string.Join(",", mismatchedVariantIds),
                 request.StoreId
@@ -64,7 +80,6 @@ public class CreateOrderCommandHandler(
                 $"Variant Ids provided :{string.Join(",", mismatchedVariantIds)} does not belong to store: {request.StoreId}."
             );
         }
-
 
         var orderItems = MapOrderItemDtoToOrderItems(productVariants, request.OrderItems);
 
@@ -78,8 +93,19 @@ public class CreateOrderCommandHandler(
         db.Orders.Add(order);
         await db.SaveChangesAsync(ct);
 
-        // TODO: reserve the stock after order is created
+        var reservationItems = orderItems
+            .Select(item => new ReservationItem(item.ProductVariantId, item.Quantity))
+            .ToList();
+
+        await inventoryServiceClient.ReserveStocksForVariants(order.Id, reservationItems, ct);
+
         order.Place();
+        await db.SaveChangesAsync(ct);
+
+        if (request.PaymentMethod != PaymentMethod.CashOnDelivery)
+        {
+            // initiate payment
+        }
 
         logger.LogInformation(
             "Order created successfully. OrderId: {OrderId}, UserId: {UserId}, StoreId: {StoreId}, VariantIds: {VariantIds}",
@@ -88,7 +114,6 @@ public class CreateOrderCommandHandler(
             request.StoreId,
             string.Join(",", variantIds)
         );
-
 
         return order;
     }
@@ -117,6 +142,15 @@ public class CreateOrderCommandHandler(
                 var variant = productVariantLookup[orderItem.ProductVariantId];
                 return OrderItem.Create(variant.VariantId, orderItem.Quantity, variant.Price);
             })
+            .ToList();
+    }
+
+    private static ICollection<Guid> GetDuplicateVariantIds(ICollection<Guid> variantIds)
+    {
+        return variantIds
+            .GroupBy(id => id)
+            .Where(group => group.Count() > 1)
+            .Select(group => group.Key)
             .ToList();
     }
 }

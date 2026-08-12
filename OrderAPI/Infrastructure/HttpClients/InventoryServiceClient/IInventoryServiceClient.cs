@@ -5,7 +5,8 @@ namespace OrderAPI.Infrastructure.HttpClients.InventoryServiceClient;
 public interface IInventoryServiceClient
 {
     Task<ReserveStocksResponse> ReserveStocksForVariants(
-        ReserveStocksRequest request,
+        Guid orderId,
+        ICollection<ReservationItem> items,
         CancellationToken cancellation = default
     );
 }

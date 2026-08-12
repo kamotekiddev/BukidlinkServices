@@ -7,7 +7,7 @@ public class ReserveStocksEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("/inventories/reserve-stocks",
+        app.MapPost("/inventories/reservations",
             async (ReserveStocksCommand request, IMediator sender) =>
             {
                 await sender.Send(request);

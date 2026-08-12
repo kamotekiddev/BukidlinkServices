@@ -14,7 +14,7 @@ public class ReserveStocksCommandHandler(
     {
         await using var transaction = await db.Database.BeginTransactionAsync(ct);
 
-        var variantIds = request.ReserveRequests
+        var variantIds = request.Items
             .Select(r => r.ProductVariantId)
             .Distinct()
             .ToList();
@@ -54,7 +54,7 @@ public class ReserveStocksCommandHandler(
 
         var inventoriesLookup = inventories.ToDictionary(i => i.ProductVariantId);
 
-        foreach (var req in request.ReserveRequests)
+        foreach (var req in request.Items)
         {
             var inventory = inventoriesLookup[req.ProductVariantId];
             inventory.Reserve(req.Quantity, request.OrderId);
@@ -66,7 +66,7 @@ public class ReserveStocksCommandHandler(
         logger.LogInformation(
             "Successfully reserved stock. OrderId: {OrderId}, Reservations: {@Reservations}",
             request.OrderId,
-            request.ReserveRequests
+            request.Items
         );
     }
 }

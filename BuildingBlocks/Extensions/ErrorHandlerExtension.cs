@@ -73,6 +73,14 @@ public static class ExceptionHandlingExtensions
                             ex.Message
                         ),
 
+                    ConflictException ex =>
+                        ProblemDetailsFactory.CreateProblem(
+                            ex.StatusCode,
+                            ex.Detail,
+                            ex.Title,
+                            ex.Code
+                        ),
+
                     _ =>
                         ProblemDetailsFactory.CreateProblem(
                             StatusCodes.Status500InternalServerError,

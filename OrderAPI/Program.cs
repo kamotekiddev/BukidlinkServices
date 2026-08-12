@@ -6,6 +6,7 @@ using Carter;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using OrderAPI.Infrastructure;
+using OrderAPI.Infrastructure.HttpClients.InventoryServiceClient;
 using OrderAPI.Infrastructure.HttpClients.ProductServiceClient;
 using OrderAPI.Infrastructure.HttpClients.StoreServiceClient;
 
@@ -49,6 +50,11 @@ builder.Services.AddHttpClient<IProductServiceClient, ProductServiceClient>(clie
 builder.Services.AddHttpClient<IStoreServiceClient, StoreServiceClient>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Services:Store:Url"]!);
+});
+
+builder.Services.AddHttpClient<IInventoryServiceClient, InventoryServiceClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:Inventory:Url"]!);
 });
 
 builder.Services.ConfigureHttpJsonOptions(options =>
