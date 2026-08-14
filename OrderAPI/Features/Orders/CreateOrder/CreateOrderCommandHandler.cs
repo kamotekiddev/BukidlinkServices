@@ -1,6 +1,8 @@
 using BuildingBlocks.Auth;
+using BuildingBlocks.Contracts;
 using BuildingBlocks.Contracts.Product;
 using BuildingBlocks.Exceptions;
+using MassTransit;
 using MediatR;
 using OrderAPI.Infrastructure;
 using OrderAPI.Infrastructure.HttpClients.InventoryServiceClient;
@@ -18,11 +20,12 @@ public class CreateOrderCommandHandler(
     ICurrentUser currentUser,
     IProductServiceClient productServiceClient,
     IStoreServiceClient storeServiceClient,
-    IInventoryServiceClient inventoryServiceClient
+    IInventoryServiceClient inventoryServiceClient,
+    IPublishEndpoint publisher
 )
     : IRequestHandler<CreateOrderCommand, Order>
 {
-    public async Task<Order> Handle(CreateOrderCommand request, CancellationToken ct)
+    public async Task<Order> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
         var userId = currentUser.UserId ?? throw new BadRequestException("Unauthenticated.");
         var variantIds = request.OrderItems.Select(item => item.ProductVariantId).ToArray();
@@ -46,12 +49,12 @@ public class CreateOrderCommandHandler(
             );
         }
 
-        var storeTask = storeServiceClient.GetStoreByIdAsync(request.StoreId, ct);
-        var variantsTask = productServiceClient.GetProductVariantsByIds(variantIds, ct);
+        var storeTask = EnsureStoreExistAsync(request.StoreId);
+        var variantsTask = productServiceClient.GetProductVariantsByIds(variantIds, cancellationToken);
 
         await Task.WhenAll(storeTask, variantsTask);
 
-        var productVariants = variantsTask.Result;
+        var productVariants = await variantsTask;
 
         if (variantIds.Length != productVariants.Count)
         {
@@ -90,17 +93,37 @@ public class CreateOrderCommandHandler(
             orderItems
         );
 
+        await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
+
         db.Orders.Add(order);
-        await db.SaveChangesAsync(ct);
+        await db.SaveChangesAsync(cancellationToken);
 
         var reservationItems = orderItems
             .Select(item => new ReservationItem(item.ProductVariantId, item.Quantity))
             .ToList();
 
-        await inventoryServiceClient.ReserveStocksForVariants(order.Id, reservationItems, ct);
+        var inventoryReserved = false;
 
-        order.Place();
-        await db.SaveChangesAsync(ct);
+        try
+        {
+            await inventoryServiceClient.ReserveStocksForVariants(order.Id, reservationItems, cancellationToken);
+            inventoryReserved = true;
+
+            order.Place();
+            await db.SaveChangesAsync(cancellationToken);
+
+            await transaction.CommitAsync(cancellationToken);
+        }
+
+        catch
+        {
+            if (inventoryReserved)
+                // fail to publish message
+                await publisher.Publish(new ReleaseStockEvent(order.Id), cancellationToken);
+
+            await transaction.RollbackAsync(cancellationToken);
+            throw;
+        }
 
         if (request.PaymentMethod != PaymentMethod.CashOnDelivery)
         {
@@ -115,7 +138,13 @@ public class CreateOrderCommandHandler(
             string.Join(",", variantIds)
         );
 
+
         return order;
+    }
+
+    private async Task EnsureStoreExistAsync(Guid storeId)
+    {
+        await storeServiceClient.GetStoreByIdAsync(storeId);
     }
 
     private static IReadOnlyList<Guid> GetMismatchedVariantIds(
