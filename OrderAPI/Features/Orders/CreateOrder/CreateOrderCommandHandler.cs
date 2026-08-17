@@ -115,12 +115,19 @@ public class CreateOrderCommandHandler(
             await transaction.CommitAsync(cancellationToken);
         }
 
-        catch
+        catch (Exception ex)
         {
             if (inventoryReserved)
-                // fail to publish message
-                await publisher.Publish(new ReleaseStockEvent(order.Id), cancellationToken);
+            {
+                logger.LogError(ex,
+                    "Order failed. Inventory are reserved but failed to process order. Releasing the reservation for OrderId:{OrderId}",
+                    order.Id
+                );
 
+                await publisher.Publish(new ReleaseStockEvent(order.Id), cancellationToken);
+            }
+
+            logger.LogError(ex, "Order failed.");
             await transaction.RollbackAsync(cancellationToken);
             throw;
         }

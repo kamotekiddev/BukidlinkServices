@@ -40,4 +40,10 @@ public class Inventory : Entity
                 Quantity = count
             });
     }
+
+    public void ReleaseReservation(InventoryReservation reservation)
+    {
+        ReservedQuantity -= reservation.Quantity;
+        Reservations.Remove(reservation);
+    }
 }

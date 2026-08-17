@@ -18,7 +18,7 @@ public sealed class InventoryServiceClient(
     )
     {
         var request = new ReserveStocksRequest(orderId, reserveStockRequets);
-        var response = await client.PostAsJsonAsync("/inventories/reserve-stocks", request, cancellation);
+        var response = await client.PostAsJsonAsync("/inventories/reservations", request, cancellation);
 
         if (!response.IsSuccessStatusCode)
         {
