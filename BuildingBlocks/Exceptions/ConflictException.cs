@@ -10,7 +10,7 @@ public class ConflictException : ApplicationException
     }
 
     public ConflictException(string detail, string? code = null) :
-        base(StatusCodes.Status204NoContent, detail, null, code)
+        base(StatusCodes.Status409Conflict, detail, null, code)
     {
     }
 }
