@@ -1,4 +1,5 @@
 using BuildingBlocks.Entities;
+using OrderAPI.Exceptions;
 using OrderAPI.Models.Enums;
 
 namespace OrderAPI.Models;
@@ -100,7 +101,9 @@ public class Order : Entity
     public void Cancel()
     {
         if (Status is OrderStatus.Delivered or OrderStatus.Completed)
-            throw new Exception("Completed or delivered orders cannot be cancelled.");
+            throw new OrderCannotBeCancelledException(Status);
+
+        if (Status is OrderStatus.Cancelled) return;
 
         Status = OrderStatus.Cancelled;
     }
