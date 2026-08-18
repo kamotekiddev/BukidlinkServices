@@ -11,16 +11,13 @@ public class Order : Entity
     }
 
     public Guid UserId { get; init; }
-
     public Guid StoreId { get; init; }
-
     public OrderStatus Status { get; private set; }
-
-    public PaymentMethod PaymentMethod { get; private set; }
-
+    public PaymentMethod PaymentMethod { get; init; }
     public PaymentStatus PaymentStatus { get; private set; }
 
-    public List<OrderItem> OrderItems { get; private set; } = [];
+    public List<OrderItem> OrderItems { get; init; } = [];
+    public List<OrderHistory> Histories { get; init; } = [];
 
     public decimal TotalPrice =>
         OrderItems.Sum(item => item.Quantity * item.SellPrice);
@@ -40,7 +37,8 @@ public class Order : Entity
         if (orderItems.Count == 0)
             throw new Exception("Order must contain at least one item.");
 
-        return new Order
+
+        var order = new Order
         {
             UserId = userId,
             StoreId = storeId,
@@ -49,27 +47,31 @@ public class Order : Entity
             PaymentMethod = paymentMethod,
             PaymentStatus = PaymentStatus.Pending
         };
+
+        order.Histories.Add(OrderHistory.Create(order.Id, OrderHistoryAction.Created));
+
+        return order;
     }
 
     public void Place()
     {
         EnsureStatus(OrderStatus.Pending);
 
-        Status = OrderStatus.Placed;
+        ChangeStatus(OrderStatus.Placed);
     }
 
     public void StartPreparing()
     {
         EnsureStatus(OrderStatus.Placed);
 
-        Status = OrderStatus.Preparing;
+        ChangeStatus(OrderStatus.Preparing);
     }
 
     public void MarkReadyForPickup()
     {
         EnsureStatus(OrderStatus.Preparing);
 
-        Status = OrderStatus.ReadyForPickup;
+        ChangeStatus(OrderStatus.ReadyForPickup);
     }
 
     public void Ship()
@@ -77,7 +79,7 @@ public class Order : Entity
         if (Status != OrderStatus.Preparing && Status != OrderStatus.ReadyForPickup)
             throw new Exception("Only prepared orders can be shipped.");
 
-        Status = OrderStatus.Shipped;
+        ChangeStatus(OrderStatus.Shipped);
     }
 
     public void Deliver()
@@ -85,17 +87,20 @@ public class Order : Entity
         EnsureStatus(OrderStatus.Shipped);
 
         Status = OrderStatus.Delivered;
+        ChangeStatus(OrderStatus.Delivered);
 
         // COD payment happens upon delivery.
         if (PaymentMethod == PaymentMethod.CashOnDelivery)
-            PaymentStatus = PaymentStatus.Paid;
+        {
+            ChangePaymentStatus(PaymentStatus.Paid);
+        }
     }
 
     public void Complete()
     {
         EnsureStatus(OrderStatus.Delivered);
 
-        Status = OrderStatus.Completed;
+        ChangeStatus(OrderStatus.Completed);
     }
 
     public void Cancel()
@@ -105,7 +110,7 @@ public class Order : Entity
 
         if (Status is OrderStatus.Cancelled) return;
 
-        Status = OrderStatus.Cancelled;
+        ChangeStatus(OrderStatus.Cancelled);
     }
 
     public void MarkPaymentPaid()
@@ -113,12 +118,12 @@ public class Order : Entity
         if (PaymentStatus == PaymentStatus.Paid)
             throw new Exception("Payment has already been completed.");
 
-        PaymentStatus = PaymentStatus.Paid;
+        ChangePaymentStatus(PaymentStatus.Paid);
     }
 
     public void MarkPaymentFailed()
     {
-        PaymentStatus = PaymentStatus.Failed;
+        ChangePaymentStatus(PaymentStatus.Failed);
     }
 
     public void Refund()
@@ -126,12 +131,37 @@ public class Order : Entity
         if (PaymentStatus != PaymentStatus.Paid)
             throw new Exception("Only paid orders can be refunded.");
 
-        PaymentStatus = PaymentStatus.Refunded;
+        ChangePaymentStatus(PaymentStatus.Refunded);
+    }
+
+    private void ChangeStatus(OrderStatus newStatus)
+    {
+        AddHistory(OrderHistoryAction.StatusChanged,
+            Status.ToString(),
+            newStatus.ToString()
+        );
+
+        Status = newStatus;
+    }
+
+    private void ChangePaymentStatus(PaymentStatus newStatus)
+    {
+        AddHistory(OrderHistoryAction.PaymentStatusChanged,
+            Status.ToString(),
+            newStatus.ToString()
+        );
+
+        PaymentStatus = newStatus;
+    }
+
+    private void AddHistory(OrderHistoryAction action, string? previousValue = null, string? newValue = null)
+    {
+        Histories.Add(OrderHistory.Create(Id, action, previousValue, newValue));
     }
 
     private void EnsureStatus(OrderStatus expected)
     {
         if (Status != expected)
-            throw new Exception($"Expected order status '{expected}' but found '{Status}'.");
+            throw new InvalidOrderStatusException(Status);
     }
 }
