@@ -38,6 +38,11 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasForeignKey(orderItem => orderItem.OrderId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasMany(order => order.Histories)
+            .WithOne(history => history.Order)
+            .HasForeignKey(history => history.OrderId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.Property(order => order.CreatedAt)
             .HasDefaultValueSql("NOW()");
 
