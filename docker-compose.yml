@@ -97,6 +97,19 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
 
+  seq:
+    image: datalust/seq:latest
+    container_name: bukidlink-seq
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      SEQ_PASSWORD: "password"
+    ports:
+      - "5341:5341"
+      - "8080:80"
+    volumes:
+      - seq-data:/data
+
 # =========================
 # VOLUMES
 # =========================
@@ -107,3 +120,4 @@ volumes:
   auth_db_data:
   store_db_data:
   rabbitmq_data:
+  seq-data:

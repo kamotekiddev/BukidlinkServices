@@ -9,6 +9,7 @@ using OrderAPI.Infrastructure;
 using OrderAPI.Infrastructure.HttpClients.InventoryServiceClient;
 using OrderAPI.Infrastructure.HttpClients.ProductServiceClient;
 using OrderAPI.Infrastructure.HttpClients.StoreServiceClient;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+
+builder.AddSerilogLogging();
 
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly())
@@ -70,6 +74,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseSerilogRequestLogging();
 app.UseGlobalExceptionHandler();
 app.UseHttpsRedirection();
 

@@ -4,6 +4,7 @@ using BuildingBlocks.Extensions;
 using Carter;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using StoreAPI.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     var connectionString = builder.Configuration.GetConnectionString("StoreDB");
     options.UseNpgsql(connectionString);
 });
+
+builder.AddSerilogLogging();
 
 builder.Services.AddMediatR(options =>
 {
@@ -35,6 +38,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

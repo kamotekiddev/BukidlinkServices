@@ -17,6 +17,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("InventoryDb"));
 });
 
+
+builder.AddSerilogLogging();
+
 builder.Services.AddMassTransit(busConfigurator =>
 {
     var rabbitMqConfig = builder.Configuration.GetSection("RabbitMq");

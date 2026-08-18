@@ -6,7 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InventoryAPI.Features.Inventories.ReleaseStock;
 
-public class ReleaseStocksConsumer(AppDbContext db, Logger<ReleaseStocksConsumer> logger) : IConsumer<ReleaseStockEvent>
+public class ReleaseStocksConsumer(
+    AppDbContext db,
+    ILogger<ReleaseStocksConsumer> logger
+)
+    : IConsumer<ReleaseStockEvent>
 {
     public async Task Consume(ConsumeContext<ReleaseStockEvent> context)
     {
