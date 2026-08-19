@@ -1,9 +1,12 @@
+using BuildingBlocks.Entities;
+
 namespace InventoryAPI.Models;
 
-public class InventoryReservation : BaseEntity
+public class InventoryReservation : Entity
 {
-    public Guid Id { get; init; }
-    public required Guid InventoryId { get; init; }
-    public required Guid OrderId { get; init; }
-    public required int Quantity { get; init; }
+    public Guid InventoryId { get; init; }
+    public Guid OrderId { get; init; }
+    public int Quantity { get; init; }
+
+    public Inventory Inventory { get; init; }
 }

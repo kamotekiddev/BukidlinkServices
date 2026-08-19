@@ -23,7 +23,7 @@ public class InventoryConfiguration : IEntityTypeConfiguration<Inventory>
             .IsUnique();
 
         builder.HasMany(inventoryItem => inventoryItem.Reservations)
-            .WithOne()
+            .WithOne(r => r.Inventory)
             .HasForeignKey(reservation => reservation.InventoryId)
             .OnDelete(DeleteBehavior.Restrict);
 

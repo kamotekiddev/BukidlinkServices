@@ -18,16 +18,35 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 
         builder.HasIndex(order => order.UserId);
 
+        builder.Property(order => order.PaymentMethod)
+            .IsRequired();
+
+        builder.Property(order => order.PaymentStatus)
+            .IsRequired();
+
         builder.Property(order => order.Status)
             .IsRequired()
             .HasMaxLength(255);
+
+        builder.Property(order => order.StoreId)
+            .IsRequired();
+
+        builder.HasIndex(order => order.StoreId);
 
         builder.HasMany(order => order.OrderItems)
             .WithOne()
             .HasForeignKey(orderItem => orderItem.OrderId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasMany(order => order.Histories)
+            .WithOne(history => history.Order)
+            .HasForeignKey(history => history.OrderId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.Property(order => order.CreatedAt)
+            .HasDefaultValueSql("NOW()");
+
+        builder.Property(order => order.UpdatedAt)
             .HasDefaultValueSql("NOW()");
     }
 }

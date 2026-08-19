@@ -5,8 +5,14 @@ using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.Extensions;
+
+public class GlobalExceptionHandler
+{
+};
 
 public static class ExceptionHandlingExtensions
 {
@@ -16,6 +22,9 @@ public static class ExceptionHandlingExtensions
         {
             builder.Run(async context =>
             {
+                var logger = context.RequestServices
+                    .GetRequiredService<ILogger<GlobalExceptionHandler>>();
+
                 var feature = context.Features
                     .Get<IExceptionHandlerFeature>();
 
@@ -24,6 +33,13 @@ public static class ExceptionHandlingExtensions
                 if (exception is null)
                     return;
 
+                logger.LogError(
+                    exception,
+                    "Unhandled exception occurred. Path: {Path}",
+                    context.Request.Path
+                );
+
+
                 var problem = exception switch
                 {
                     ValidationException validation =>
@@ -31,28 +47,46 @@ public static class ExceptionHandlingExtensions
 
                     DomainException ex =>
                         ProblemDetailsFactory.CreateProblem(
-                            StatusCodes.Status400BadRequest,
-                            ex.Message),
+                            ex.StatusCode,
+                            ex.Detail,
+                            ex.Title,
+                            ex.Code
+                        ),
 
                     BadRequestException ex =>
                         ProblemDetailsFactory.CreateProblem(
                             StatusCodes.Status400BadRequest,
-                            ex.Message),
+                            ex.Message
+                        ),
 
                     NotFoundException ex =>
                         ProblemDetailsFactory.CreateProblem(
                             StatusCodes.Status404NotFound,
-                            ex.Message),
+                            "Not found",
+                            ex.Message
+                        ),
 
                     UnAuthorizedException ex =>
                         ProblemDetailsFactory.CreateProblem(
                             StatusCodes.Status401Unauthorized,
-                            ex.Message),
+                            "Unauthorized",
+                            ex.Message
+                        ),
+
+                    ConflictException ex =>
+                        ProblemDetailsFactory.CreateProblem(
+                            ex.StatusCode,
+                            ex.Detail,
+                            ex.Title,
+                            ex.Code
+                        ),
 
                     _ =>
                         ProblemDetailsFactory.CreateProblem(
                             StatusCodes.Status500InternalServerError,
-                            "An unexpected error occurred.")
+                            "Unexpected Error",
+                            "An unexpected error occurred."
+                        )
                 };
 
                 context.Response.StatusCode = problem.Status ?? 500;

@@ -7,11 +7,17 @@ public class CancelOrderEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPut("/orders/{orderId:guid}",
+        app.MapPut("/orders/{orderId:guid}/cancel",
             async (IMediator sender, Guid orderId, CancellationToken ct) =>
             {
-                var order = await sender.Send(new CancelOrderCommand(orderId), ct);
-                return Results.Ok(order);
+                await sender.Send(new CancelOrderCommand(orderId), ct);
+
+                return Results.Ok(new
+                {
+                    Message = "Successfully cancelled.",
+                    OrderId = orderId,
+                    Status = StatusCodes.Status200OK
+                });
             });
     }
 }

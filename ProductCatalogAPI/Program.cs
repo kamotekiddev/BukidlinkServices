@@ -7,6 +7,7 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using ProductCatalogAPI.Infrastructure;
 using ProductCatalogAPI.Infrastructure.HttpClients.StoreHttpClient;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.AddSerilogLogging();
 
 builder.Services.AddValidatorsFromAssemblies([typeof(Program).Assembly]);
 builder.Services.AddMediatR(cfg =>
@@ -58,6 +61,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseSerilogRequestLogging();
 app.UseGlobalExceptionHandler();
 
 app.UseHttpsRedirection();

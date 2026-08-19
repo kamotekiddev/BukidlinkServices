@@ -1,4 +1,4 @@
-﻿namespace InventoryAPI.Models
+﻿namespace InventoryAPI.Models.Enums
 {
     public enum InventoryAction
     {

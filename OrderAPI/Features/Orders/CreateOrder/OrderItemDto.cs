@@ -1,3 +1,6 @@
 namespace OrderAPI.Features.Orders.CreateOrder;
 
-public record OrderItemDto(Guid ProductVariantId, int Quantity, decimal SellPrice);
+public record OrderItemDto(
+    Guid ProductVariantId,
+    int Quantity
+);

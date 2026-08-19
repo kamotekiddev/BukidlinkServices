@@ -13,7 +13,7 @@ namespace InventoryAPI.Features.Inventories.GetInventories
         {
             return await dbContext.Inventories
                 .Include(inventoryItems => inventoryItems.Reservations)
-                .ToListAsync(cancellationToken).ConfigureAwait(false);
+                .ToListAsync(cancellationToken);
         }
     }
 }

@@ -1,14 +1,16 @@
+using BuildingBlocks.Entities;
+using InventoryAPI.Models.Exceptions;
+
 namespace InventoryAPI.Models;
 
-public class Inventory : BaseEntity
+public class Inventory : Entity
 {
-    public Guid Id { get; init; }
     public Guid ProductVariantId { get; init; }
     public int Quantity { get; set; }
 
     public List<InventoryReservation> Reservations { get; init; } = [];
 
-    public int ReservedQuantity => Reservations.Sum(reservation => reservation.Quantity);
+    public int ReservedQuantity { get; private set; }
     public int AvailableQuantity => Quantity - ReservedQuantity;
 
     public void IncreaseQuantity(int count)
@@ -18,13 +20,30 @@ public class Inventory : BaseEntity
 
     public void DecreaseQuantity(int count)
     {
-        if (count > AvailableQuantity) throw new Exception("Not enough stock.");
+        if (count > AvailableQuantity)
+            throw new InsufficientStockException();
         Quantity -= count;
     }
 
     public void Reserve(int count, Guid orderId)
     {
-        if (count > AvailableQuantity) throw new Exception("Not enough stock.");
-        Reservations.Add(new InventoryReservation { InventoryId = Id, OrderId = orderId, Quantity = count });
+        if (count > AvailableQuantity)
+            throw new InsufficientStockException();
+
+        ReservedQuantity += count;
+
+        Reservations.Add(
+            new InventoryReservation
+            {
+                InventoryId = Id,
+                OrderId = orderId,
+                Quantity = count
+            });
+    }
+
+    public void ReleaseReservation(InventoryReservation reservation)
+    {
+        ReservedQuantity -= reservation.Quantity;
+        Reservations.Remove(reservation);
     }
 }

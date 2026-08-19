@@ -1,6 +1,8 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
+using BuildingBlocks.Extensions;
 using Carter;
+using InventoryAPI.Features.Inventories.ReleaseStock;
 using InventoryAPI.Infrastructure;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +14,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("InventoryDb"));
 });
+
+
+builder.AddSerilogLogging();
 
 builder.Services.AddMassTransit(busConfigurator =>
 {
     var rabbitMqConfig = builder.Configuration.GetSection("RabbitMq");
+
+    busConfigurator.AddConsumer<ReleaseStocksConsumer>();
+
     busConfigurator.UsingRabbitMq((ctx, cfg) =>
     {
         cfg.Host(rabbitMqConfig["Host"], "/", host =>
@@ -47,6 +55,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseGlobalExceptionHandler();
 app.MapCarter();
 app.UseHttpsRedirection();
 app.Run();

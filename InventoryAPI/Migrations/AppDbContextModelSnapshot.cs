@@ -83,6 +83,9 @@ namespace InventoryAPI.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
+                    b.Property<int>("ReservedQuantity")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -125,19 +128,20 @@ namespace InventoryAPI.Migrations
 
                     b.HasIndex("InventoryId");
 
-                    b.HasIndex("OrderId")
-                        .IsUnique();
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Reservations");
                 });
 
             modelBuilder.Entity("InventoryAPI.Models.InventoryReservation", b =>
                 {
-                    b.HasOne("InventoryAPI.Models.Inventory", null)
+                    b.HasOne("InventoryAPI.Models.Inventory", "Inventory")
                         .WithMany("Reservations")
                         .HasForeignKey("InventoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Inventory");
                 });
 
             modelBuilder.Entity("InventoryAPI.Models.Inventory", b =>

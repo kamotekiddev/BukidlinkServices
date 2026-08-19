@@ -1,0 +1,5 @@
+using ProductCatalogAPI.Domain;
+
+namespace ProductCatalogAPI.Features.ProductVariants.GetProductVariantsByIds;
+
+public record GetProductVariantByIdsResult(IEnumerable<ProductVariant> ProductVariants);

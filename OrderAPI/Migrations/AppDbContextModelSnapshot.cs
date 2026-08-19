@@ -33,9 +33,23 @@ namespace OrderAPI.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("NOW()");
 
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PaymentStatus")
+                        .HasColumnType("integer");
+
                     b.Property<int>("Status")
                         .HasMaxLength(255)
                         .HasColumnType("integer");
+
+                    b.Property<Guid>("StoreId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<Guid>("UserId")
                         .HasMaxLength(255)
@@ -43,9 +57,48 @@ namespace OrderAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("StoreId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("OrderAPI.Models.OrderHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Action")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW()");
+
+                    b.Property<string>("NewValue")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("PreviousValue")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderHistory");
                 });
 
             modelBuilder.Entity("OrderAPI.Models.OrderItem", b =>
@@ -79,6 +132,17 @@ namespace OrderAPI.Migrations
                     b.ToTable("OrderItem");
                 });
 
+            modelBuilder.Entity("OrderAPI.Models.OrderHistory", b =>
+                {
+                    b.HasOne("OrderAPI.Models.Order", "Order")
+                        .WithMany("Histories")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("OrderAPI.Models.OrderItem", b =>
                 {
                     b.HasOne("OrderAPI.Models.Order", null)
@@ -90,6 +154,8 @@ namespace OrderAPI.Migrations
 
             modelBuilder.Entity("OrderAPI.Models.Order", b =>
                 {
+                    b.Navigation("Histories");
+
                     b.Navigation("OrderItems");
                 });
 #pragma warning restore 612, 618

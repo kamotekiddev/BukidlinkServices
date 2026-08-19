@@ -9,6 +9,7 @@ using Carter;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("AuthDB"));
 });
+
+builder.AddSerilogLogging();
 
 builder.Services.AddCarter();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -45,6 +48,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseSerilogRequestLogging();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseGlobalExceptionHandler();
