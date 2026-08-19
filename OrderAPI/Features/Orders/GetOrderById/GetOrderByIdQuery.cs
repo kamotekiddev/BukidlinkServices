@@ -1,6 +1,6 @@
+using BuildingBlocks.Contracts.Order;
 using MediatR;
-using OrderAPI.Models;
 
 namespace OrderAPI.Features.Orders.GetOrderById;
 
-public record GetOrderByIdQuery(Guid OrderId) : IRequest<Order>;
+public record GetOrderByIdQuery(Guid OrderId) : IRequest<OrderDto>;
