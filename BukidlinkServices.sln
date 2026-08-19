@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth", "Auth\Auth.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreAPI", "StoreAPI\StoreAPI.csproj", "{13B50B28-EAEC-4A6A-8A0B-6A80A832FE66}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentAPI", "PaymentAPI\PaymentAPI.csproj", "{529D1953-0B30-4A82-B241-7868059B26F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +44,10 @@ Global
 		{13B50B28-EAEC-4A6A-8A0B-6A80A832FE66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13B50B28-EAEC-4A6A-8A0B-6A80A832FE66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13B50B28-EAEC-4A6A-8A0B-6A80A832FE66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{529D1953-0B30-4A82-B241-7868059B26F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{529D1953-0B30-4A82-B241-7868059B26F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{529D1953-0B30-4A82-B241-7868059B26F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{529D1953-0B30-4A82-B241-7868059B26F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
