@@ -82,6 +82,23 @@ services:
       - store_db_data:/var/lib/postgresql/data
 
   # =========================
+  # STORE SERVICE DB
+  # =========================
+
+  payment-db:
+    image: postgres:16
+    container_name: payment_service_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: payment_db
+    ports:
+      - "5437:5432"
+    volumes:
+      - payment_db_data:/var/lib/postgresql/data
+
+  # =========================
   # RABBITMQ 4 + MANAGEMENT
   # =========================
   rabbitmq:
@@ -119,5 +136,6 @@ volumes:
   order_db_data:
   auth_db_data:
   store_db_data:
+  payment_db_data:
   rabbitmq_data:
   seq-data:
