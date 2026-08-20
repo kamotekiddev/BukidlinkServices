@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using PaymentAPI.Models.Payment;
+using PaymentAPI.Models.PaymentTransaction;
 
 namespace PaymentAPI.Infrastructure;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-    public DbSet<Payment> Payments { get; set; }
+    public DbSet<PaymentTransaction> Payments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

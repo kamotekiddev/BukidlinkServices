@@ -1,4 +1,4 @@
-namespace PaymentAPI.Models.Payment;
+namespace PaymentAPI.Models.PaymentTransaction;
 
 public enum PaymentType
 {

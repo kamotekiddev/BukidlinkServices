@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace PaymentAPI.Models.Payment;
+namespace PaymentAPI.Models.PaymentTransaction;
 
-public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
+public class PaymentTransactionConfiguration : IEntityTypeConfiguration<PaymentTransaction>
 {
-    public void Configure(EntityTypeBuilder<Payment> builder)
+    public void Configure(EntityTypeBuilder<PaymentTransaction> builder)
     {
         builder.HasKey(payment => payment.Id);
 
