@@ -1,4 +1,4 @@
-namespace OrderAPI.Models.Enums;
+namespace BuildingBlocks.Enums;
 
 public enum PaymentMethod
 {

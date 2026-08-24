@@ -1,4 +1,5 @@
 using BuildingBlocks.Entities;
+using BuildingBlocks.Enums;
 using OrderAPI.Exceptions;
 using OrderAPI.Models.Enums;
 

@@ -1,6 +1,7 @@
 using BuildingBlocks.Auth;
 using BuildingBlocks.Contracts;
 using BuildingBlocks.Contracts.Product;
+using BuildingBlocks.Enums;
 using BuildingBlocks.Exceptions;
 using MassTransit;
 using MediatR;
@@ -10,7 +11,6 @@ using OrderAPI.Infrastructure.HttpClients.InventoryServiceClient.Models;
 using OrderAPI.Infrastructure.HttpClients.ProductServiceClient;
 using OrderAPI.Infrastructure.HttpClients.StoreServiceClient;
 using OrderAPI.Models;
-using OrderAPI.Models.Enums;
 
 namespace OrderAPI.Features.Orders.CreateOrder;
 

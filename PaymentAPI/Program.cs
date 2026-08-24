@@ -1,5 +1,6 @@
 using BuildingBlocks.Extensions;
 using Microsoft.EntityFrameworkCore;
+using PaymentAPI.Extensions;
 using PaymentAPI.Infrastructure;
 using Serilog;
 
@@ -12,7 +13,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("PaymentDb"));
 });
+
 builder.AddSerilogLogging();
+builder.Services.AddXenditHttpClient(builder.Configuration);
 
 var app = builder.Build();
 
