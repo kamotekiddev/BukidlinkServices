@@ -1,18 +1,29 @@
+using System.Text.Json.Serialization;
 using BuildingBlocks.Enums;
 
 namespace PaymentAPI.Infrastructure.HttpClients.XenditPaymentProviderClient.Models;
 
 public class XenditPaymentRequest
 {
-    public required string ReferenceId { get; init; }
+    [JsonPropertyName("reference_id")] public required string ReferenceId { get; init; }
+
     public string Type { get; init; } = "PAY";
+
     public string Country { get; init; } = "PH";
+
     public string Currency { get; init; } = "PHP";
-    public decimal RequestAmount { get; init; }
-    public string CaptureMethod { get; init; } = "AUTOMATIC";
-    public required string ChannelCode { get; init; }
+
+    [JsonPropertyName("request_amount")] public decimal RequestAmount { get; init; }
+
+    [JsonPropertyName("capture_method")] public string CaptureMethod { get; init; } = "AUTOMATIC";
+
+    [JsonPropertyName("channel_code")] public required string ChannelCode { get; init; }
+
+    [JsonPropertyName("channel_properties")]
     public required ChannelProperties ChannelProperties { get; init; }
+
     public string? Description { get; init; }
+
     public Dictionary<string, string>? Metadata { get; init; }
 
     public static XenditPaymentRequest Create(

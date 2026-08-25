@@ -11,16 +11,18 @@ public class XenditPaymentProviderClient(
         PaymentRequest payment,
         CancellationToken cancellationToken)
     {
-        var requerst = XenditPaymentRequest.Create(
+        var request = XenditPaymentRequest.Create(
             payment.Method,
             payment.ReferenceId,
             payment.Amount,
             payment.Currency,
-            payment.RedirectUrls.FailureReturnUrl,
-            payment.RedirectUrls.SuccessReturnUrl,
-            payment.RedirectUrls.CancelReturnUrl);
-        var response = await client.PostAsJsonAsync("/v3/payment-requests", new { }, cancellationToken);
+            payment.RedirectUrls?.FailureReturnUrl,
+            payment.RedirectUrls?.SuccessReturnUrl,
+            payment.RedirectUrls?.CancelReturnUrl);
 
+        var response = await client.PostAsJsonAsync("/v3/payment-requests", request, cancellationToken);
+
+        response.EnsureSuccessStatusCode();
 
         throw new NotImplementedException();
     }
