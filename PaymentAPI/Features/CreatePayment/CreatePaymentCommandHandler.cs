@@ -1,12 +1,14 @@
 using MediatR;
 using PaymentAPI.Infrastructure;
+using PaymentAPI.Infrastructure.HttpClients;
 using PaymentAPI.Models.PaymentTransaction;
 
 namespace PaymentAPI.Features.CreatePayment;
 
 public class CreatePaymentCommandHandler(
     AppDbContext db,
-    ILogger<CreatePaymentCommandHandler> logger)
+    ILogger<CreatePaymentCommandHandler> logger,
+    IPaymentProviderClient paymentProviderClient)
     : IRequestHandler<CreatePaymentCommand, CreatePaymentResult>
 {
     public async Task<CreatePaymentResult> Handle(CreatePaymentCommand request, CancellationToken cancellationToken)
@@ -24,10 +26,28 @@ public class CreatePaymentCommandHandler(
 
 
         // trigger provider payment
+        var paymentRequest = new PaymentRequest
+        {
+            ReferenceId = referenceId,
+            Amount = request.Amount,
+            Method = request.PaymentMethod,
+            RedirectUrls = request.RedirectUrls
+        };
 
-        // handle idempotency
-        // create the payment transaction record
-        throw new NotImplementedException();
+        try
+        {
+            var paymentResult = await paymentProviderClient.PayAsync(paymentRequest, cancellationToken);
+            return new CreatePaymentResult(paymentResult?.CheckoutUrl ?? "");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(
+                ex,
+                "Payment failed for OrderId:{OrderId} ReferenceId:{ReferenceId}",
+                request.OrderId,
+                referenceId);
+            throw;
+        }
     }
 
     private string GenerateReferenceId()

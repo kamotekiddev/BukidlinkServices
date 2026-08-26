@@ -1,8 +1,6 @@
-using PaymentAPI.Models.PaymentTransaction;
-
 namespace PaymentAPI.Infrastructure.HttpClients;
 
 public record PaymentResult(
-    string ProviderReferenceId,
-    PaymentStatus Status,
+    string ReferenceId,
+    string Status,
     string? CheckoutUrl = null);

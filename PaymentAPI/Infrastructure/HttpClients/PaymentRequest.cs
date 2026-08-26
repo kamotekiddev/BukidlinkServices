@@ -24,15 +24,15 @@ public abstract class PaymentCustomer
 
 public abstract class CardDetails
 {
-    public required string CardNumber { get; init; }
-    public required string Cvc { get; init; }
-    public required string ExpiryMonth { get; init; }
-    public required string ExpiryYear { get; init; }
+    public required string CardNumber { get; set; }
+    public required string Cvc { get; set; }
+    public required string ExpiryMonth { get; set; }
+    public required string ExpiryYear { get; set; }
 }
 
-public abstract class RedirectUrls
+public class RedirectUrls
 {
-    public string? FailureReturnUrl { get; init; }
-    public string? SuccessReturnUrl { get; init; }
-    public string? CancelReturnUrl { get; init; }
+    public string? FailureReturnUrl { get; set; }
+    public string? SuccessReturnUrl { get; set; }
+    public string? CancelReturnUrl { get; set; }
 }

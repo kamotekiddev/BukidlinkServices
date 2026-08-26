@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace PaymentAPI.Infrastructure.HttpClients.XenditPaymentProviderClient.Models;
 
-public class MayaChannelProperties : ChannelProperties
+public class MayaChannelProperties
 {
     [JsonPropertyName("failure_return_url")]
     public string? FailureReturnUrl { get; init; }

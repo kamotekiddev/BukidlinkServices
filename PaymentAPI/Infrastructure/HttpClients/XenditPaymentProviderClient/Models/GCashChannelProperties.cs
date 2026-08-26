@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace PaymentAPI.Infrastructure.HttpClients.XenditPaymentProviderClient.Models;
 
-public class GCashChannelProperties : ChannelProperties
+public class GCashChannelProperties
 {
     [JsonPropertyName("failure_return_url")]
     public string FailureReturnUrl { get; init; }

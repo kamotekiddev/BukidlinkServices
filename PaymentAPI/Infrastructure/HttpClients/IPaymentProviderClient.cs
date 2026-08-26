@@ -4,5 +4,5 @@ public interface IPaymentProviderClient
 {
     Task<PaymentResult> PayAsync(
         PaymentRequest payment,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken = default);
 }

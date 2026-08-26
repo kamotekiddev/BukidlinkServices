@@ -20,7 +20,7 @@ public class XenditPaymentRequest
     [JsonPropertyName("channel_code")] public required string ChannelCode { get; init; }
 
     [JsonPropertyName("channel_properties")]
-    public required ChannelProperties ChannelProperties { get; init; }
+    public required object ChannelProperties { get; init; }
 
     public string? Description { get; init; }
 
