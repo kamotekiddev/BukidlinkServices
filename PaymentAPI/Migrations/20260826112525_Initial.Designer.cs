@@ -12,7 +12,7 @@ using PaymentAPI.Infrastructure;
 namespace PaymentAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260819122349_Initial")]
+    [Migration("20260826112525_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace PaymentAPI.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("PaymentAPI.Models.Payment.Payment", b =>
+            modelBuilder.Entity("PaymentAPI.Models.PaymentTransaction.PaymentTransaction", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -39,12 +39,21 @@ namespace PaymentAPI.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("NOW()");
 
+                    b.Property<Guid?>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("PaymentTransactionId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("ReferenceId")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
+
+                    b.Property<Guid?>("StoreId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Type")
                         .HasColumnType("integer");
