@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using BuildingBlocks.Exceptions;
 using PaymentAPI.Infrastructure.HttpClients.XenditPaymentProviderClient.Models;
 
@@ -22,11 +23,21 @@ public class XenditPaymentProviderClient(
             payment.RedirectUrls?.SuccessReturnUrl,
             payment.RedirectUrls?.CancelReturnUrl);
 
-        var body = JsonSerializer.Serialize(request);
+        var jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            PropertyNameCaseInsensitive = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            Converters =
+            {
+                new JsonStringEnumConverter()
+            }
+        };
 
         using var response = await client.PostAsJsonAsync(
             "/v3/payment_requests",
             request,
+            jsonOptions,
             cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -43,14 +54,16 @@ public class XenditPaymentProviderClient(
                 error?.Message ?? "Payment failed.");
         }
 
-        var result = await response.Content
-            .ReadFromJsonAsync<XenditPaymentResponse>(cancellationToken);
+
+        var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        var result = JsonSerializer.Deserialize<XenditPaymentResponse>(responseBody, jsonOptions);
 
         if (result is null)
         {
             logger.LogWarning(
-                "Payment failed: {Provider} returned an invalid response.",
-                nameof(XenditPaymentProviderClient));
+                "Payment failed: {Provider} returned an invalid response. ResponseBody:{ResponseBody}",
+                nameof(XenditPaymentProviderClient),
+                responseBody);
 
             throw new ConflictException("Payment failed.");
         }

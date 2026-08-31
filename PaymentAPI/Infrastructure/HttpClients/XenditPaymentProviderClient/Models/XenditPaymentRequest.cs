@@ -22,8 +22,10 @@ public class XenditPaymentRequest
     [JsonPropertyName("channel_properties")]
     public required object ChannelProperties { get; init; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Description { get; init; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, string>? Metadata { get; init; }
 
     public static XenditPaymentRequest Create(
